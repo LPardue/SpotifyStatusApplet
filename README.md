@@ -20,7 +20,7 @@ SpotifyStatusApplet is written in C# and has been developed using Visual Studio 
 Dependencies
 --------------------------------------
 
-SpotifStatusApplets builds upon the great efforts of other developers/projects! The following software components are incorporated into the source tree to aid distribution
+SpotifyStatusApplet builds upon the great efforts of other developers/projects! The following software components are incorporated into the source tree to aid distribution
 
 - [Spotify Local API](https://code.google.com/p/spotify-local-api/) - A very simple and small library that allows .NET developers to get track information, (un)pause spotify, play tracks, get cover art and more! 
 - [GammaJul LgLcd](http://gjlglcd.codeplex.com/) - A .NET wrapper around the Logitech SDK for G15/G19 keyboard screens. Supports raw byte sending, GDI+ drawing and rendering WPF elements onto the screen.
