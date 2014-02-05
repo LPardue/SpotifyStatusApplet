@@ -1,0 +1,2144 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GammaJul.LgLcd</name>
+    </assembly>
+    <members>
+        <member name="T:GammaJul.LgLcd.LcdGdiPage">
+            <summary>
+            Represents a <see cref="T:GammaJul.LgLcd.LcdPage"/> that use GDI+ to do its drawing.
+            </summary>
+        </member>
+        <member name="T:GammaJul.LgLcd.LcdPage">
+            <summary>
+            Base class for every device page.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdPage.OnUpdating(GammaJul.LgLcd.UpdateEventArgs)">
+            <summary>
+            Raises the <see cref="E:GammaJul.LgLcd.LcdPage.Updating"/> event.
+            </summary>
+            <param name="e">Update parameters.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdPage.OnUpdated(GammaJul.LgLcd.UpdateEventArgs)">
+            <summary>
+            Raises the <see cref="E:GammaJul.LgLcd.LcdPage.Updated"/> event.
+            </summary>
+            <param name="e">Update parameters.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdPage.OnDrawing">
+            <summary>
+            Raises the <see cref="E:GammaJul.LgLcd.LcdPage.Drawing"/> event.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdPage.OnDrawn(System.Byte[])">
+            <summary>
+            Raises the <see cref="E:GammaJul.LgLcd.LcdPage.Drawn"/> event.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdPage.SetAsCurrentDevicePage">
+            <summary>
+            Sets this page as <see cref="P:GammaJul.LgLcd.LcdPage.Device"/>'s <see cref="P:GammaJul.LgLcd.LcdDevice.CurrentPage"/>.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdPage.Invalidate">
+            <summary>
+            Call this method to force an update and draw cycle even if the page has not changed.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdPage.Update(System.TimeSpan,System.TimeSpan)">
+            <summary>
+            Updates the page content.
+            </summary>
+            <param name="elapsedTotalTime">Time elapsed since the device creation.</param>
+            <param name="elapsedTimeSinceLastFrame">Time elapsed since last frame update.</param>
+            <returns><c>true</c> if the update has done something and a redraw is required.</returns>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdPage.UpdateCore(System.TimeSpan,System.TimeSpan)">
+            <summary>
+            Derived classes override this method in order to update the page content.
+            </summary>
+            <param name="elapsedTotalTime">Time elapsed since the device creation.</param>
+            <param name="elapsedTimeSinceLastFrame">Time elapsed since last frame update.</param>
+            <returns><c>true</c> if the update has done something and a redraw is required.</returns>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdPage.Draw">
+            <summary>
+            Draws the page content.
+            </summary>
+            <returns>A pixel array conforming to <see cref="P:GammaJul.LgLcd.LcdPage.Device"/>'s <see cref="P:GammaJul.LgLcd.LcdDevice.DeviceType"/>.</returns>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdPage.DrawCore">
+            <summary>
+            Derived classes override this method in order to draw the page content visually.
+            </summary>
+            <returns>Implementors must return a pixel array conforming to
+            <see cref="P:GammaJul.LgLcd.LcdPage.Device"/>'s <see cref="P:GammaJul.LgLcd.LcdDevice.DeviceType"/>.</returns>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdPage.Dispose">
+            <summary>
+            Releases the resources associated with this <see cref="T:GammaJul.LgLcd.LcdPage"/>.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdPage.Dispose(System.Boolean)">
+            <summary>
+            Releases the resources associated with this <see cref="T:GammaJul.LgLcd.LcdPage"/>.
+            </summary>
+            <param name="disposing">Whether to also release managed resources along with unmanaged ones.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdPage.#ctor(GammaJul.LgLcd.LcdDevice)">
+            <summary>
+            Creates a new <see cref="T:GammaJul.LgLcd.LcdPage"/> on the given device.
+            </summary>
+            <param name="device">Device where this page will be shown.</param>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdPage.Device">
+            <summary>
+            Gets the device where this page will be shown.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdPage.LastFrameUpdate">
+            <summary>
+            Gets the last time this page was updated, relative to the device's creation time.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdPage.Priority">
+            <summary>
+            Gets or sets the priority of this page when drawing.
+            The default value is <see cref="F:GammaJul.LgLcd.LcdPriority.Normal"/>.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdPage.UpdateMode">
+            <summary>
+            Gets or sets the mode (synchronous or asynchronous) used to update this page.
+            The default value is <see cref="F:GammaJul.LgLcd.LcdUpdateMode.Async"/>.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdPage.DesiredFramerate">
+            <summary>
+            Gets or sets the desired frame rate, in frame per seconds, for this page.
+            The default value is 30.
+            </summary>
+        </member>
+        <member name="E:GammaJul.LgLcd.LcdPage.Updating">
+            <summary>
+            Occurs when the page starts updating its content.
+            </summary>
+        </member>
+        <member name="E:GammaJul.LgLcd.LcdPage.Updated">
+            <summary>
+            Occurs when the page has updated its content.
+            </summary>
+        </member>
+        <member name="E:GammaJul.LgLcd.LcdPage.Drawing">
+            <summary>
+            Occurs when the page starts drawing its content.
+            </summary>
+        </member>
+        <member name="E:GammaJul.LgLcd.LcdPage.Drawn">
+            <summary>
+            Occurs when the page has drawn its content, but the pixels have not yet been send to the device.
+            This is your last chance to do some kind of post-processing on the pixels.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiPage.OnGdiDrawing(System.Drawing.Graphics)">
+            <summary>
+            Raises the <see cref="E:GammaJul.LgLcd.LcdGdiPage.GdiDrawing"/> event.
+            </summary>
+            <param name="graphics"><see cref="T:System.Drawing.Graphics"/> to use for custom drawing.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiPage.PrepareGraphics(System.Drawing.Graphics)">
+            <summary>
+            Prepares a <see cref="T:System.Drawing.Graphics"/> object for drawing.
+            </summary>
+            <param name="graphics"><see cref="T:System.Drawing.Graphics"/> to prepare for drawing.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiPage.PrepareGraphicsForChild(System.Drawing.Graphics,GammaJul.LgLcd.LcdGdiObject)">
+            <summary>
+            Prepares a <see cref="T:System.Drawing.Graphics"/> object for drawing a specified <see cref="T:GammaJul.LgLcd.LcdGdiObject"/>,
+            by setting the appropriate properties (clip, interpolation, etc) on the <see cref="T:System.Drawing.Graphics"/>.
+            </summary>
+            <param name="graphics"><see cref="T:System.Drawing.Graphics"/> to prepare for drawing <paramref name="child"/>.</param>
+            <param name="child"><see cref="T:GammaJul.LgLcd.LcdGdiObject"/> that will be drawn on <paramref name="graphics"/>.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiPage.UpdateCore(System.TimeSpan,System.TimeSpan)">
+            <summary>
+            Derived classes override this method in order to update the page content.
+            </summary>
+            <param name="elapsedTotalTime">Time elapsed since the device creation.</param>
+            <param name="elapsedTimeSinceLastFrame">Time elapsed since last frame update.</param>
+            <returns><c>true</c> if the update has done something and a redraw is required.</returns>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiPage.DrawCore">
+            <summary>
+            Derived classes override this method in order to draw the page content visually.
+            </summary>
+            <returns>Implementors must return a pixel array conforming to
+            <see cref="P:GammaJul.LgLcd.LcdPage.Device"/>'s <see cref="P:GammaJul.LgLcd.LcdDevice.DeviceType"/>.</returns>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiPage.PixelsFromBitmap">
+            <summary>
+            Copies the pixels from <see cref="P:GammaJul.LgLcd.LcdGdiPage.Bitmap"/> and returns them.
+            </summary>
+            <returns>A copy of the pixels from <see cref="P:GammaJul.LgLcd.LcdGdiPage.Bitmap"/>.</returns>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiPage.#ctor(GammaJul.LgLcd.LcdDevice)">
+            <summary>
+            Creates a new <see cref="T:GammaJul.LgLcd.LcdGdiPage"/> on the given device.
+            </summary>
+            <param name="device">Device where this page will be shown.</param>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiPage.Bitmap">
+            <summary>
+            Gets the <see cref="P:GammaJul.LgLcd.LcdGdiPage.Bitmap"/> used to draw this page.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiPage.Children">
+            <summary>
+            Gets a list of <see cref="T:GammaJul.LgLcd.LcdGdiObject"/>s that are the children of this page.
+            </summary>
+        </member>
+        <member name="E:GammaJul.LgLcd.LcdGdiPage.GdiDrawing">
+            <summary>
+            Occurs just after the page have been cleared of all contents, but before the children are drawn.
+            This event provides a <see cref="T:System.Drawing.Graphics"/> object to use for custom drawing.
+            </summary>
+        </member>
+        <member name="T:GammaJul.LgLcd.LcdGdiPolygon">
+            <summary>
+            Represents a polygon on a <see cref="T:GammaJul.LgLcd.LcdGdiPage"/>.
+            </summary>
+        </member>
+        <member name="T:GammaJul.LgLcd.LcdGdiAbsObject">
+            <summary>
+            Base class for objects that support absolute and relative positions.
+            </summary>
+        </member>
+        <member name="T:GammaJul.LgLcd.LcdGdiObject">
+            <summary>
+            Base class for every object that is drawn on a <see cref="T:GammaJul.LgLcd.LcdGdiPage"/>.
+            </summary>
+            <seealso cref="T:System.Drawing.Graphics"/>.
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiObject.OnChanged">
+            <summary>
+            Raises the <see cref="E:GammaJul.LgLcd.LcdGdiObject.Changed"/> event.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiObject.CalcAbsolutePosition(System.Drawing.Size,System.Single)">
+            <summary>
+            Calculates the object absolute position given its alignments and final size.
+            </summary>
+            <param name="bitmapSize">Size of the bitmap where this object is drawn.</param>
+            <param name="offset">Additional offset to fix position problems when right/bottom aligned.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiObject.CalcAbsolutePosition(System.Drawing.Size)">
+            <summary>
+            Calculates the object absolute position given its alignments and final size.
+            </summary>
+            <param name="bitmapSize">Size of the bitmap where this object is drawn.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiObject.Update(System.TimeSpan,System.TimeSpan,GammaJul.LgLcd.LcdGdiPage,System.Drawing.Graphics)">
+            <summary>
+            Derived classes must override this method in order to calculate the
+            absolute position and final size of the object. This method is called only if
+            <see cref="P:GammaJul.LgLcd.LcdGdiObject.HasChanged"/> is <c>true</c>.
+            </summary>
+            <param name="elapsedTotalTime">Time elapsed since the device creation.</param>
+            <param name="elapsedTimeSinceLastFrame">Time elapsed since last frame update.</param>
+            <param name="page">Page where this object will be drawn.</param>
+            <param name="graphics"><see cref="T:System.Drawing.Graphics"/> to use for drawing.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiObject.Draw(GammaJul.LgLcd.LcdGdiPage,System.Drawing.Graphics)">
+            <summary>
+            Derived classes must override this method in order to draw the GDI object.
+            </summary>
+            <param name="page">Page where this object will be drawn.</param>
+            <param name="graphics"><see cref="T:System.Drawing.Graphics"/> to use for drawing.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiObject.Dispose">
+            <summary>
+            Releases the resources associated with this <see cref="T:GammaJul.LgLcd.LcdGdiObject"/>.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiObject.Dispose(System.Boolean)">
+            <summary>
+            Releases the resources associated with this <see cref="T:GammaJul.LgLcd.LcdGdiObject"/>.
+            </summary>
+            <param name="disposing">Whether to also release managed resources along with unmanaged ones.</param>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiObject.Pen">
+            <summary>
+            Gets or sets the pen to use to draw the edge of this object.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiObject.Brush">
+            <summary>
+            Gets or sets the brush to use to draw the fill of this object.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiObject.HorizontalAlignment">
+            <summary>
+            Gets or sets the horizontal alignment of this object on the <see cref="T:GammaJul.LgLcd.LcdGdiPage"/>.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiObject.VerticalAlignment">
+            <summary>
+            Gets or sets the vertical alignment of this object on the <see cref="T:GammaJul.LgLcd.LcdGdiPage"/>.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiObject.Margin">
+            <summary>
+            Gets or sets the margins of this <see cref="T:GammaJul.LgLcd.LcdGdiObject"/> on the <see cref="T:GammaJul.LgLcd.LcdGdiPage"/>.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiObject.Size">
+            <summary>
+            Gets or sets the size of this <see cref="T:GammaJul.LgLcd.LcdGdiObject"/> on the <see cref="T:GammaJul.LgLcd.LcdGdiPage"/>.
+            </summary>
+            <remarks>
+            Note that this member is not relevant for every object. For example, <see cref="T:GammaJul.LgLcd.LcdGdiText"/> has this
+            member set to (0,0) to not limit the drawn text. In any case, use <see cref="P:GammaJul.LgLcd.LcdGdiObject.FinalSize"/> to get
+            the final calculated size of this <see cref="T:GammaJul.LgLcd.LcdGdiObject"/>.
+            The <see cref="P:System.Drawing.SizeF.Width"/> member of this property is not used if <see cref="P:GammaJul.LgLcd.LcdGdiObject.HorizontalAlignment"/>
+            is <see cref="F:GammaJul.LgLcd.LcdGdiHorizontalAlignment.Stretch"/>.
+            The <see cref="P:System.Drawing.SizeF.Height"/> member of this property is not used if <see cref="P:GammaJul.LgLcd.LcdGdiObject.VerticalAlignment"/>
+            is <see cref="F:GammaJul.LgLcd.LcdGdiVerticalAlignment.Stretch"/>.
+            </remarks>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiObject.Transform">
+            <summary>
+            Gets or sets a copy of the geometric world transformation for this <see cref="T:GammaJul.LgLcd.LcdGdiObject"/>.
+            </summary>
+            <seealso cref="P:System.Drawing.Graphics.Transform"/>.
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiObject.Clip">
+            <summary>
+            Gets or sets a <see cref="T:System.Drawing.Region"/> that delimits the drawing region of this <see cref="T:GammaJul.LgLcd.LcdGdiObject"/>.
+            </summary>
+            <seealso cref="P:System.Drawing.Graphics.Clip"/>.
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiObject.InterpolationMode">
+            <summary>
+            Gets or sets the interpolation mode associated with this <see cref="T:GammaJul.LgLcd.LcdGdiObject"/>.
+            </summary>
+            <seealso cref="P:System.Drawing.Graphics.InterpolationMode"/>.
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiObject.PixelOffsetMode">
+            <summary>
+            Gets or set a value specifying how pixels are offset during rendering of this <see cref="T:GammaJul.LgLcd.LcdGdiObject"/>.
+            </summary>
+            <seealso cref="P:System.Drawing.Graphics.PixelOffsetMode"/>.
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiObject.RenderingOrigin">
+            <summary>
+            Gets or sets the rendering origin of this <see cref="T:GammaJul.LgLcd.LcdGdiObject"/> for dithering and for hatch brushes.
+            </summary>
+            <seealso cref="P:System.Drawing.Graphics.RenderingOrigin"/>.
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiObject.SmoothingMode">
+            <summary>
+            Gets or sets the rendering quality for this <see cref="T:GammaJul.LgLcd.LcdGdiObject"/>.
+            </summary>
+            <seealso cref="P:System.Drawing.Graphics.SmoothingMode"/>.
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiObject.IsVisible">
+            <summary>
+            Gets or sets whether this object is visible and drawn.
+            </summary>
+            <remarks>
+            If this property is <c>false</c>, <see cref="M:GammaJul.LgLcd.LcdGdiObject.Update(System.TimeSpan,System.TimeSpan,GammaJul.LgLcd.LcdGdiPage,System.Drawing.Graphics)"/> will still be called, but not <see cref="M:GammaJul.LgLcd.LcdGdiObject.Draw(GammaJul.LgLcd.LcdGdiPage,System.Drawing.Graphics)"/>.
+            </remarks>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiObject.Tag">
+            <summary>
+            Gets or sets any user-defined object associated with this <see cref="T:GammaJul.LgLcd.LcdGdiObject"/>.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiObject.AbsolutePosition">
+            <summary>
+            Gets the absolute position of this object, calculated from <see cref="P:GammaJul.LgLcd.LcdGdiObject.HorizontalAlignment"/>,
+            <see cref="P:GammaJul.LgLcd.LcdGdiObject.VerticalAlignment"/> and <see cref="P:GammaJul.LgLcd.LcdGdiObject.Margin"/>. This value is valid only after the object
+            has been updated on a specified device.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiObject.FinalSize">
+            <summary>
+            Gets the calculated size of this object. This value is valid only after the object has been
+            updated on a specified device.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiObject.HasChanged">
+            <summary>
+            Gets or sets whether this object has changed since last frame.
+            </summary>
+        </member>
+        <member name="E:GammaJul.LgLcd.LcdGdiObject.Changed">
+            <summary>
+            Occurs when a property change that invalidate the object (and thus requires another update pass) occurs.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiAbsObject.GetPoint(System.Int32)">
+            <summary>
+            Gets a point at a specified index.
+            </summary>
+            <param name="index">Index of the point.</param>
+            <returns>Point at <paramref name="index"/>.</returns>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiAbsObject.GetPoints">
+            <summary>
+            Gets a copy of the points used to draw this object.
+            </summary>
+            <returns>A copy of the points used to draw this object.</returns>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiAbsObject.CalcAndSetPoints(System.Drawing.PointF[],System.Boolean)">
+            <summary>
+            Calculates the size of the objects from the points, computes margin and makes points relative if needed.
+            </summary>
+            <param name="points">Points defining the object.</param>
+            <param name="keepAbsolute">Whether the given points are left untouched.
+            <see cref="P:GammaJul.LgLcd.LcdGdiAbsObject.KeepAbsolute"/> for details.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiAbsObject.Update(System.TimeSpan,System.TimeSpan,GammaJul.LgLcd.LcdGdiPage,System.Drawing.Graphics)">
+            <summary>
+            Updates the position of the object.
+            </summary>
+            <param name="elapsedTotalTime">Time elapsed since the device creation.</param>
+            <param name="elapsedTimeSinceLastFrame">Time elapsed since last frame update.</param>
+            <param name="page">Page where this object will be drawn.</param>
+            <param name="graphics"><see cref="T:System.Drawing.Graphics"/> to use for drawing.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiAbsObject.OnChanged">
+            <summary>
+            Checks if the alignments are set to stretch, throw if they are.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiAbsObject.#ctor(System.Drawing.PointF[],System.Boolean)">
+            <summary>
+            Creates a new <see cref="T:GammaJul.LgLcd.LcdGdiAbsObject"/> with the specified points.
+            </summary>
+            <param name="points">Points defining the object.</param>
+            <param name="keepAbsolute">Whether the given points are left untouched.
+            <see cref="P:GammaJul.LgLcd.LcdGdiAbsObject.KeepAbsolute"/> for details.</param>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiAbsObject.KeepAbsolute">
+            <summary>
+            Gets or sets whether the object points are left untouched.
+            </summary>
+            <remarks>
+            When this property is <c>true</c>, <see cref="P:GammaJul.LgLcd.LcdGdiObject.Margin"/>,
+            <see cref="P:GammaJul.LgLcd.LcdGdiObject.HorizontalAlignment"/> and <see cref="P:GammaJul.LgLcd.LcdGdiObject.VerticalAlignment"/>
+            are unused and <see cref="P:GammaJul.LgLcd.LcdGdiObject.AbsolutePosition"/> is always (0,0).
+            This means that the object is always placed absolutely on the screen.
+            When this property is <c>false</c>, margin and alignments are used, and every space in the X or Y
+            coordinate is transformed into a margin. This means that the points will always be relative to
+            <see cref="P:GammaJul.LgLcd.LcdGdiObject.Margin"/>, like every other object does.
+            </remarks>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiAbsObject.TotalPoints">
+            <summary>
+            Gets the number of points used to draw this object.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiPolygon.SetPoints(System.Drawing.PointF[],System.Boolean)">
+            <summary>
+            Changes the points of the polygon.
+            </summary>
+            <param name="points">Points delimiting the polygon.</param>
+            <param name="keepAbsolute">Whether the given points are left untouched.
+            <see cref="P:GammaJul.LgLcd.LcdGdiAbsObject.KeepAbsolute"/> for details.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiPolygon.Draw(GammaJul.LgLcd.LcdGdiPage,System.Drawing.Graphics)">
+            <summary>
+            Draws the polygon.
+            </summary>
+            <param name="page">Page where this object will be drawn.</param>
+            <param name="graphics"><see cref="T:System.Drawing.Graphics"/> to use for drawing.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiPolygon.#ctor">
+            <summary>
+            Creates a new <see cref="T:GammaJul.LgLcd.LcdGdiPolygon"/>.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiPolygon.#ctor(System.Drawing.Pen,System.Drawing.PointF[],System.Boolean)">
+            <summary>
+            Creates a new <see cref="T:GammaJul.LgLcd.LcdGdiPolygon"/> with the specified pen for the edge and points.
+            </summary>
+            <param name="pen">Pen used to draw the edge of the polygon.</param>
+            <param name="points">Points delimiting the polygon.</param>
+            <param name="keepAbsolute">Whether the given points are left untouched.
+            <see cref="P:GammaJul.LgLcd.LcdGdiAbsObject.KeepAbsolute"/> for details.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiPolygon.#ctor(System.Drawing.Brush,System.Drawing.PointF[],System.Boolean)">
+            <summary>
+            Creates a new <see cref="T:GammaJul.LgLcd.LcdGdiPolygon"/> with the specified brush for the fill and points.
+            </summary>
+            <param name="brush">Brush used to fill the polygon.</param>
+            <param name="points">Points delimiting the polygon.</param>
+            <param name="keepAbsolute">Whether the given points are left untouched.
+            <see cref="P:GammaJul.LgLcd.LcdGdiAbsObject.KeepAbsolute"/> for details.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiPolygon.#ctor(System.Drawing.Pen,System.Drawing.Brush,System.Drawing.PointF[],System.Boolean)">
+            <summary>
+            Creates a new <see cref="T:GammaJul.LgLcd.LcdGdiPolygon"/> with the specified pen for the edge,
+            brush for the fill and points.
+            </summary>
+            <param name="pen">Pen used to draw the edge of the polygon.</param>
+            <param name="brush">Brush used to fill the polygon.</param>
+            <param name="points">Points delimiting the polygon.</param>
+            <param name="keepAbsolute">Whether the given points are left untouched.
+            <see cref="P:GammaJul.LgLcd.LcdGdiAbsObject.KeepAbsolute"/> for details.</param>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiPolygon.FillMode">
+            <summary>
+            Gets or sets a member of the <see cref="P:GammaJul.LgLcd.LcdGdiPolygon.FillMode"/> enumeration that determines how the polygon is filled.
+            </summary>
+        </member>
+        <member name="T:GammaJul.LgLcd.LcdGdiEllipse">
+            <summary>
+            Represents a simple ellipse on a <see cref="T:GammaJul.LgLcd.LcdGdiPage"/>.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiEllipse.Draw(GammaJul.LgLcd.LcdGdiPage,System.Drawing.Graphics)">
+            <summary>
+            Draws the ellipse.
+            </summary>
+            <param name="page">Page where this object will be drawn.</param>
+            <param name="graphics"><see cref="T:System.Drawing.Graphics"/> to use for drawing.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiEllipse.#ctor">
+            <summary>
+            Creates a new <see cref="T:GammaJul.LgLcd.LcdGdiEllipse"/>.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiEllipse.#ctor(System.Drawing.Brush,System.Drawing.RectangleF)">
+            <summary>
+            Creates a new <see cref="T:GammaJul.LgLcd.LcdGdiEllipse"/> with no edge,
+            and specified brush for the fill and rectangle dimensions.
+            </summary>
+            <param name="brush">Brush to use to draw the fill of this object.</param>
+            <param name="rectangle">Rectangle dimensions.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiEllipse.#ctor(System.Drawing.Pen,System.Drawing.RectangleF)">
+            <summary>
+            Creates a new <see cref="T:GammaJul.LgLcd.LcdGdiEllipse"/> with the specified pen for the edge,
+            no fill brush and specified rectangle dimensions.
+            </summary>
+            <param name="pen">Pen to use to draw the edge of this object.</param>
+            <param name="rectangle">Rectangle dimensions.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiEllipse.#ctor(System.Drawing.Pen,System.Drawing.Brush,System.Drawing.RectangleF)">
+            <summary>
+            Creates a new <see cref="T:GammaJul.LgLcd.LcdGdiEllipse"/> with the specified pen for the edge,
+            brush for the fill and rectangle dimensions.
+            </summary>
+            <param name="pen">Pen to use to draw the edge of this object.</param>
+            <param name="brush">Brush to use to draw the fill of this object.</param>
+            <param name="rectangle">Rectangle dimensions.</param>
+        </member>
+        <member name="T:GammaJul.LgLcd.LcdGdiText">
+            <summary>
+            Represents a simple text on a <see cref="T:GammaJul.LgLcd.LcdGdiPage"/> page.
+            This class defaults <see cref="P:GammaJul.LgLcd.LcdGdiObject.Brush"/> to <see cref="P:System.Drawing.Brushes.Black"/>.
+            <see cref="P:GammaJul.LgLcd.LcdGdiObject.Size"/> is used only if you want to clip or wrap the text:
+            the default is (0,0) and means that the text will be drawn without constraints.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiText.Update(System.TimeSpan,System.TimeSpan,GammaJul.LgLcd.LcdGdiPage,System.Drawing.Graphics)">
+            <summary>
+            Updates the position of the object.
+            </summary>
+            <param name="elapsedTotalTime">Time elapsed since the device creation.</param>
+            <param name="elapsedTimeSinceLastFrame">Time elapsed since last frame update.</param>
+            <param name="page">Page where this object will be drawn.</param>
+            <param name="graphics"><see cref="T:System.Drawing.Graphics"/> to use for drawing.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiText.Draw(GammaJul.LgLcd.LcdGdiPage,System.Drawing.Graphics)">
+            <summary>
+            Draws the text.
+            </summary>
+            <param name="page">Page where this object will be drawn.</param>
+            <param name="graphics"><see cref="T:System.Drawing.Graphics"/> to use for drawing.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiText.Dispose(System.Boolean)">
+            <summary>
+            Releases the resources associated with this <see cref="T:GammaJul.LgLcd.LcdGdiText"/>.
+            </summary>
+            <param name="disposing">Whether to also release managed resources along with unmanaged ones.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiText.#ctor">
+            <summary>
+            Creates a new <see cref="T:GammaJul.LgLcd.LcdGdiText"/> without text and a default generic font.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiText.#ctor(System.String)">
+            <summary>
+            Creates a new <see cref="T:GammaJul.LgLcd.LcdGdiText"/> with the given text and a default generic font.
+            </summary>
+            <param name="text">Text to draw.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiText.#ctor(System.String,System.Drawing.Font)">
+            <summary>
+            Creates a new <see cref="T:GammaJul.LgLcd.LcdGdiText"/> with the given text and font.
+            </summary>
+            <param name="text">Text to draw.</param>
+            <param name="font"><see cref="P:GammaJul.LgLcd.LcdGdiText.Font"/> that defines the text format of the string.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiText.#ctor(System.String,System.Drawing.Font,System.Drawing.StringFormat)">
+            <summary>
+            Creates a new <see cref="T:GammaJul.LgLcd.LcdGdiText"/> with the given text, font and string format.
+            </summary>
+            <param name="text">Text to draw.</param>
+            <param name="font"><see cref="P:GammaJul.LgLcd.LcdGdiText.Font"/> that defines the text format of the string.</param>
+            <param name="stringFormat"><see cref="P:GammaJul.LgLcd.LcdGdiText.StringFormat"/> that specifies formatting attributes, such as line
+            spacing and alignment, that are applied to the drawn text.</param>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiText.Text">
+            <summary>
+            Gets or sets the text to draw.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiText.Font">
+            <summary>
+            Gets or sets the <see cref="P:GammaJul.LgLcd.LcdGdiText.Font"/> that defines the text format of the string.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiText.StringFormat">
+            <summary>
+            Gets or sets the <see cref="P:GammaJul.LgLcd.LcdGdiText.StringFormat"/> that specifies formatting attributes,
+            such as line spacing and alignment, that are applied to the drawn text.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiText.TextContrast">
+            <summary>
+            Gets or sets the gamma correction value for rendering text.
+            The default value is 4.
+            </summary>
+            <seealso cref="P:System.Drawing.Graphics.TextContrast"/>.
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiText.TextRenderingHint">
+            <summary>
+            Gets or sets the rendering mode for text.
+            The default value is <see cref="F:System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit"/>.
+            </summary>
+            <seealso cref="P:System.Drawing.Graphics.TextRenderingHint"/>.
+        </member>
+        <member name="T:GammaJul.LgLcd.LcdGdiHorizontalAlignment">
+            <summary>
+            Enumeration defining the possible horizontal alignments of an object.
+            </summary>
+        </member>
+        <member name="F:GammaJul.LgLcd.LcdGdiHorizontalAlignment.Left">
+            <summary>
+            The object is left-aligned.
+            </summary>
+        </member>
+        <member name="F:GammaJul.LgLcd.LcdGdiHorizontalAlignment.Center">
+            <summary>
+            The object is centered.
+            </summary>
+        </member>
+        <member name="F:GammaJul.LgLcd.LcdGdiHorizontalAlignment.Right">
+            <summary>
+            The object is right-aligned.
+            </summary>
+        </member>
+        <member name="F:GammaJul.LgLcd.LcdGdiHorizontalAlignment.Stretch">
+            <summary>
+            The object takes the width of the device
+            </summary>
+        </member>
+        <member name="T:GammaJul.LgLcd.LcdDeviceQvga">
+            <summary>
+            Encapsulates a 320x240 color LCD device.
+            </summary>
+        </member>
+        <member name="T:GammaJul.LgLcd.LcdDevice">
+            <summary>
+            Encapsulates a LCD device. You can retrieve an derived instance of this class by using
+            <see cref="M:GammaJul.LgLcd.LcdApplet.OpenDeviceByType(GammaJul.LgLcd.LcdDeviceType)"/>.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdDevice.OnSoftButtonsChanged(GammaJul.LgLcd.LcdSoftButtons)">
+            <summary>
+            Raise the <see cref="M:GammaJul.LgLcd.LcdDevice.OnSoftButtonsChanged(GammaJul.LgLcd.LcdSoftButtons)"/> event.
+            </summary>
+            <param name="buttons"></param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdDevice.ReadSoftButtons">
+            <summary>
+            Read the current state of the soft buttons for the specified device.
+            If your application is not being currently displayed, you will receive a resulting
+            value of <see cref="F:GammaJul.LgLcd.LcdSoftButtons.None"/>, even if some soft buttons are being pressed.
+            This is in order to avoid users inadvertently interacting with an application that does
+            not presently show on the display. 
+            </summary>
+            <returns>A combination of <see cref="T:GammaJul.LgLcd.LcdSoftButtons"/> flags representing which buttons are pressed.</returns>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdDevice.UpdateBitmap(System.Byte[],GammaJul.LgLcd.LcdPriority,GammaJul.LgLcd.LcdUpdateMode)">
+            <summary>
+            Updates a bitmap of the device. Use this function if you want to manually manage the pixels sent
+            to the device, without using the Pages feature.
+            </summary>
+            <param name="pixels">An array of pixels constituting the bitmap. See the SDK help for more information.</param>
+            <param name="priority">Priority of the update.</param>
+            <param name="updateMode">Update mode (synchronous or asynchronous).</param>
+            <returns>
+            If <paramref name="updateMode"/> is <see cref="F:GammaJul.LgLcd.LcdUpdateMode.SyncCompleteWithinFrame"/>, this function returns
+            <c>true</c> if the bitmap was corrently updated within the synchronous time frame and <c>false</c> otherwise.
+            For every other mode, this function always returns <c>true</c>.
+            </returns>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdDevice.UpdateBitmapCore(System.Byte[],GammaJul.LgLcd.LcdPriority,GammaJul.LgLcd.LcdUpdateMode)">
+            <summary>
+            Really updates a bitmap of the device.
+            </summary>
+            <param name="pixels">An array of pixels constituting the bitmap. See the SDK help for more information.</param>
+            <param name="priority">Priority of the update.</param>
+            <param name="updateMode">Update mode (synchronous or asynchronous).</param>
+            <returns>
+            If <paramref name="updateMode"/> is <see cref="F:GammaJul.LgLcd.LcdUpdateMode.SyncCompleteWithinFrame"/>, this function returns
+            <c>true</c> if the bitmap was corrently updated within the synchronous time frame and <c>false otherwise</c>.
+            For every other mode, this function always returns <c>true</c>.
+            </returns>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdDevice.DoUpdateAndDraw">
+            <summary>
+            This method must be called by the program in its idle time to keep updating the device's current page.
+            </summary>
+            <remarks>
+            If <see cref="P:GammaJul.LgLcd.LcdDevice.CurrentPage"/> is <c>null</c>, nothing will happen.
+            Even if this method is called repeatedly, the update and draw only occur
+            at the <see cref="P:GammaJul.LgLcd.LcdPage.DesiredFramerate"/>.
+            </remarks>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdDevice.ReOpen">
+            <summary>
+            Reopens this device after it has been disposed.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdDevice.VerifyValid">
+            <summary>
+            Ensures that the object is not disposed.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdDevice.Dispose">
+            <summary>
+            Releases the resources associated with this <see cref="T:GammaJul.LgLcd.LcdDevice"/>.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdDevice.Dispose(System.Boolean)">
+            <summary>
+            Releases the resources associated with this <see cref="T:GammaJul.LgLcd.LcdDevice"/>.
+            </summary>
+            <param name="disposing">Whether to also release managed resources along with unmanaged ones.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdDevice.#ctor(GammaJul.LgLcd.LcdApplet,GammaJul.LgLcd.LcdDeviceType)">
+            <summary>
+            Creates a new instance of <see cref="T:GammaJul.LgLcd.LcdDevice"/> for the given applet and device type.
+            </summary>
+            <param name="applet"><see cref="T:GammaJul.LgLcd.LcdApplet"/> that opened this device.</param>
+            <param name="deviceType">Type of this device.</param>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdDevice.Applet">
+            <summary>
+            Gets the <see cref="T:GammaJul.LgLcd.LcdApplet"/> that opened this device.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdDevice.DeviceType">
+            <summary>
+            Gets the type of this device.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdDevice.Pages">
+            <summary>
+            Gets a list of pages shown on this device.
+            Note that this list is only provided to easily keep pages associated with a device but
+            is not mandatory to use. One can set a <see cref="P:GammaJul.LgLcd.LcdDevice.CurrentPage"/> that is not in this collection.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdDevice.CurrentPage">
+            <summary>
+            Gets or sets the current shown page. The default is <c>null</c>.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdDevice.PixelWidth">
+            <summary>
+            Gets the width of this device, in pixels.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdDevice.PixelHeight">
+            <summary>
+            Gets the height of this device, in pixels.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdDevice.BitsPerPixel">
+            <summary>
+            Gets the number of bits per pixel (aka color depth) of this device.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdDevice.IsDisposed">
+            <summary>
+            Gets whether the device has been disposed.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdDevice.DeviceNumber">
+            <summary>
+            Gets the internal number of this device.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdDevice.SetAsForegroundApplet">
+            <summary>
+            Gets or sets whether the applet will become the one shown on the LCD and prevents the LCD library from
+            switching to other applications, when this property is <c>true</c>.
+            When this property is reverted to <c>false</c>, the LCD library resumes its switching algorithm that the user had chosen.
+            </summary>
+        </member>
+        <member name="E:GammaJul.LgLcd.LcdDevice.SoftButtonsChanged">
+            <summary>
+            Occurs when some soft buttons are pressed or released and the applet is currently is foreground on this device.
+            Note that this event is raised in the context of a thread within the library.
+            Therefore, take the necessary precautions for thread safety.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdDeviceQvga.UpdateBitmapCore(System.Byte[],GammaJul.LgLcd.LcdPriority,GammaJul.LgLcd.LcdUpdateMode)">
+            <summary>
+            Really updates a bitmap of the device.
+            </summary>
+            <param name="pixels">An array of pixels constituting the bitmap. See the SDK help for more information.</param>
+            <param name="priority">Priority of the update.</param>
+            <param name="updateMode">Update mode (synchronous or asynchronous).</param>
+            <returns>
+            If <paramref name="updateMode"/> is <see cref="F:GammaJul.LgLcd.LcdUpdateMode.SyncCompleteWithinFrame"/>, this function returns
+            <c>true</c> if the bitmap was corrently updated within the synchronous time frame and <c>false otherwise</c>.
+            For every other mode, this function always returns <c>true</c>.
+            </returns>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdDeviceQvga.#ctor(GammaJul.LgLcd.LcdApplet)">
+            <summary>
+            Creates a new instance of <see cref="T:GammaJul.LgLcd.LcdDeviceMonochrome"/> for the given applet.
+            </summary>
+            <param name="applet"><see cref="T:GammaJul.LgLcd.LcdApplet"/> that opened this device.</param>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdDeviceQvga.PixelWidth">
+            <summary>
+            Gets the width of this device, in pixels.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdDeviceQvga.PixelHeight">
+            <summary>
+            Gets the height of this device, in pixels.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdDeviceQvga.BitsPerPixel">
+            <summary>
+            Gets the number of bits per pixel (aka color depth) of this device.
+            </summary>
+        </member>
+        <member name="T:GammaJul.LgLcd.LcdPriority">
+            <summary>
+            This enumeration lists every possible priority in a screen update.
+            </summary>
+        </member>
+        <member name="F:GammaJul.LgLcd.LcdPriority.IdleNoShow">
+            <summary>
+            Lowest priority, disable displaying. Use this priority when you don’t have anything to show.
+            </summary>
+        </member>
+        <member name="F:GammaJul.LgLcd.LcdPriority.Background">
+            <summary>
+            Priority used for low priority items.
+            </summary>
+        </member>
+        <member name="F:GammaJul.LgLcd.LcdPriority.Normal">
+            <summary>
+            Normal priority, to be used by most applications most of the time.
+            </summary>
+        </member>
+        <member name="F:GammaJul.LgLcd.LcdPriority.Alert">
+            <summary>
+            Highest priority. To be used only for critical screens, such as “your CPU temperature is too high”.
+            </summary>
+        </member>
+        <member name="T:GammaJul.LgLcd.LcdAppletCapabilities">
+            <summary>
+            Flags indicating which capabilities the applet supports.
+            </summary>
+        </member>
+        <member name="F:GammaJul.LgLcd.LcdAppletCapabilities.Monochrome">
+            <summary>
+            This flag indicates that the applet supports 160 by 43 monochrome screen (G13/G15/Z10).
+            </summary>
+        </member>
+        <member name="F:GammaJul.LgLcd.LcdAppletCapabilities.Qvga">
+            <summary>
+            This flag indicates that the applet supports 320 by 240 color screen (G19).
+            </summary>
+        </member>
+        <member name="F:GammaJul.LgLcd.LcdAppletCapabilities.Both">
+            <summary>
+            This flag indicates that the applet supports both 160 by 43 monochrome screen (G13/G15/Z10)
+            and 320 by 240 color screen (G19).
+            </summary>
+        </member>
+        <member name="T:GammaJul.LgLcd.LcdGdiScrollViewer">
+            <summary>
+            Object that can be placed on a <see cref="T:GammaJul.LgLcd.LcdGdiPage"/> and that provides scrolling support for its child.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiScrollViewer.SetClipForChild(System.Drawing.Graphics)">
+            <summary>
+            Sets a clipping region that is the intersection of this object's clip, the child clip and the viewport.
+            </summary>
+            <param name="graphics">Graphics on which to set the clip.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiScrollViewer.Update(System.TimeSpan,System.TimeSpan,GammaJul.LgLcd.LcdGdiPage,System.Drawing.Graphics)">
+            <summary>
+            Updates the position of the object.
+            </summary>
+            <param name="elapsedTotalTime">Time elapsed since the device creation.</param>
+            <param name="elapsedTimeSinceLastFrame">Time elapsed since last frame update.</param>
+            <param name="page">Page where this object will be drawn.</param>
+            <param name="graphics"><see cref="T:System.Drawing.Graphics"/> to use for drawing.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiScrollViewer.Draw(GammaJul.LgLcd.LcdGdiPage,System.Drawing.Graphics)">
+            <summary>
+            Draws this object.
+            </summary>
+            <param name="page">Page where this object will be drawn.</param>
+            <param name="graphics"><see cref="T:System.Drawing.Graphics"/> to use for drawing.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiScrollViewer.#ctor">
+            <summary>
+            Creates a new <see cref="T:GammaJul.LgLcd.LcdGdiScrollViewer"/>.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiScrollViewer.#ctor(GammaJul.LgLcd.LcdGdiObject)">
+            <summary>
+            Creates a new <see cref="T:GammaJul.LgLcd.LcdGdiScrollViewer"/> with the specified child.
+            </summary>
+            <param name="child">Child to add into the scroll viewer.</param>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiScrollViewer.Extent">
+            <summary>
+            Gets the extent of this scroll viewer, that is the complete size taken by the child.
+            This value only has a meaning after <see cref="M:GammaJul.LgLcd.LcdGdiScrollViewer.Update(System.TimeSpan,System.TimeSpan,GammaJul.LgLcd.LcdGdiPage,System.Drawing.Graphics)"/> was called.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiScrollViewer.Viewport">
+            <summary>
+            Gets the view port of this scroll viewer, that is the visible size.
+            This value only has a meaning after <see cref="M:GammaJul.LgLcd.LcdGdiScrollViewer.Update(System.TimeSpan,System.TimeSpan,GammaJul.LgLcd.LcdGdiPage,System.Drawing.Graphics)"/> was called.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiScrollViewer.MaxScrollX">
+            <summary>
+            Gets the maximum scroll value in the horizontal axis.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiScrollViewer.MaxScrollY">
+            <summary>
+            Gets the maximum scroll value in the vertical axis.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiScrollViewer.CurrentScrollX">
+            <summary>
+            Gets or sets the current scroll value in the horizontal axis.
+            If less than 0.0f is passed, 0.0f will be used.
+            If more than <see cref="P:GammaJul.LgLcd.LcdGdiScrollViewer.MaxScrollX"/> is passed, <see cref="P:GammaJul.LgLcd.LcdGdiScrollViewer.MaxScrollX"/> will be used.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiScrollViewer.CurrentScrollY">
+            <summary>
+            Gets or sets the current scroll value in the horizontal axis.
+            If less than 0.0f is passed, 0.0f will be used.
+            If more than <see cref="P:GammaJul.LgLcd.LcdGdiScrollViewer.MaxScrollY"/> is passed, <see cref="P:GammaJul.LgLcd.LcdGdiScrollViewer.MaxScrollY"/> will be used.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiScrollViewer.AutoScrollX">
+            <summary>
+            Gets or sets whether the control automatically scrolls in the horizontal axis.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiScrollViewer.AutoScrollSpeedX">
+            <summary>
+            Gets or sets the speed of the auto scrolling in the horizontal axis, in pixels per second.
+            The default value is 25.0f;
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiScrollViewer.AutoScrollXFixedStartTime">
+            <summary>
+            Gets the time to wait before the horizontal scrolling occurs.
+            The default value is one second.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiScrollViewer.AutoScrollXFixedEndTime">
+            <summary>
+            Gets the time to wait after the horizontal scrolling occurred, before restarting it.
+            The default value is one second.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiScrollViewer.AutoScrollY">
+            <summary>
+            Gets or sets whether the control automatically scrolls in the vertical axis.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiScrollViewer.AutoScrollSpeedY">
+            <summary>
+            Gets or sets the speed of the auto scrolling in the vertical axis, in pixels per second.
+            The default value is 25.0f;
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiScrollViewer.AutoScrollYFixedStartTime">
+            <summary>
+            Gets the time to wait before the vertical scrolling occurs.
+            The default value is one second.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiScrollViewer.AutoScrollYFixedEndTime">
+            <summary>
+            Gets the time to wait after the vertical scrolling occurred, before restarting it.
+            The default value is one second.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiScrollViewer.Child">
+            <summary>
+            Gets or sets the child object that will be scrolled.
+            </summary>
+        </member>
+        <member name="T:GammaJul.LgLcd.GdiDrawingEventArgs">
+            <summary>
+            Event arguments for the <see cref="E:GammaJul.LgLcd.LcdGdiPage.GdiDrawing"/> event.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.GdiDrawingEventArgs.#ctor(System.Drawing.Graphics)">
+            <summary>
+            Creates a new instance of <see cref="T:GammaJul.LgLcd.DrawnEventArgs"/> with the specified graphics.
+            </summary>
+            <param name="graphics"><see cref="P:GammaJul.LgLcd.GdiDrawingEventArgs.Graphics"/> to use to draw on the page.</param>
+        </member>
+        <member name="P:GammaJul.LgLcd.GdiDrawingEventArgs.Graphics">
+            <summary>
+            Gets the <see cref="P:GammaJul.LgLcd.GdiDrawingEventArgs.Graphics"/> to use to draw on the page.
+            </summary>
+        </member>
+        <member name="T:GammaJul.LgLcd.LgLcdPermission">
+            <summary>
+            Represents a code access permission used to display information on a Logitech LCD screen.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LgLcdPermission.IsUnrestricted">
+            <summary>
+            Returns a value indicating whether unrestricted access to the resource
+            protected by the permission is allowed.
+            </summary>
+            <returns><c>true</c> if unrestricted use of the resource protected by
+            the permission is allowed; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:GammaJul.LgLcd.LgLcdPermission.ToXml">
+            <summary>
+            Ceates an XML encoding of the security object and its current state.
+            </summary>
+            <returns>An XML encoding of the security object, including any state information.</returns>
+        </member>
+        <member name="M:GammaJul.LgLcd.LgLcdPermission.FromXml(System.Security.SecurityElement)">
+            <summary>
+            Reconstructs a security object with a specified state from an XML encoding.
+            </summary>
+            <param name="elem">The XML encoding to use to reconstruct the security object.</param>
+            <exception cref="T:System.ArgumentNullException">The <paramref name="elem"/> parameter is <c>null</c>.</exception>
+            <exception cref="T:System.ArgumentException">The <paramref name="elem"/> parameter does not contain the XML
+            encoding for an instance of the same type as the current instance.</exception>
+        </member>
+        <member name="M:GammaJul.LgLcd.LgLcdPermission.Copy">
+            <summary>
+            Creates and returns an identical copy of the current permission object.
+            </summary>
+            <returns>A copy of the current permission object.</returns>
+        </member>
+        <member name="M:GammaJul.LgLcd.LgLcdPermission.Intersect(System.Security.IPermission)">
+            <summary>
+            Creates and returns a permission that is the intersection of the current permission and the specified permission.
+            </summary>
+            <returns>
+            A new permission that represents the intersection of the current permission and the specified permission.
+            This new permission is <c>null</c> if the intersection is empty.
+            </returns>
+            <param name="target">A permission to intersect with the current permission.
+            It must be of the same type as the current permission.</param>
+            <exception cref="T:System.ArgumentException">The <paramref name="target"/> parameter is not <c>null</c>
+            and is not an instance of the same class as the current permission.</exception>
+        </member>
+        <member name="M:GammaJul.LgLcd.LgLcdPermission.IsSubsetOf(System.Security.IPermission)">
+            <summary>
+            Determines whether the current permission is a subset of the specified permission.
+            </summary>
+            <returns><c>true</c> if the current permission is a subset of the specified permission;
+            otherwise, <c>false</c>.</returns>
+            <param name="target">A permission that is to be tested for the subset relationship.
+            This permission must be of the same type as the current permission.</param>
+            <exception cref="T:System.ArgumentException">The <paramref name="target"/> parameter is
+            not <c>null</c> and is not of the same type as the current permission.</exception>
+        </member>
+        <member name="M:GammaJul.LgLcd.LgLcdPermission.#ctor(System.Boolean,System.Boolean)">
+            <summary>
+            Creates a new <see cref="T:GammaJul.LgLcd.LgLcdPermission"/> with the specified
+            monochrome and QVGA states.
+            </summary>
+            <param name="monochrome">Whether the use of monochrome devices is allowed.</param>
+            <param name="qvga">Whether the use of QVGA devices is allowed.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LgLcdPermission.#ctor(System.Security.Permissions.PermissionState)">
+            <summary>
+            Creates a bew <see cref="T:GammaJul.LgLcd.LgLcdPermission"/> with the specified state.
+            </summary>
+            <param name="state">State determining the permission.</param>
+        </member>
+        <member name="P:GammaJul.LgLcd.LgLcdPermission.Monochrome">
+            <summary>
+            Gets or sets whether the usage of monochrome devices is allowed.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LgLcdPermission.Qvga">
+            <summary>
+            Gets or sets whether the usage of QVGA devices is allowed.
+            </summary>
+        </member>
+        <member name="T:GammaJul.LgLcd.LcdGdiArc">
+            <summary>
+            Represents a simple rectangle on a <see cref="T:GammaJul.LgLcd.LcdGdiPage"/>.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiArc.Draw(GammaJul.LgLcd.LcdGdiPage,System.Drawing.Graphics)">
+            <summary>
+            Draws the rectangle.
+            </summary>
+            <param name="page">Page where this object will be drawn.</param>
+            <param name="graphics"><see cref="T:System.Drawing.Graphics"/> to use for drawing.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiArc.#ctor">
+            <summary>
+            Creates a new <see cref="T:GammaJul.LgLcd.LcdGdiArc"/>.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiArc.#ctor(System.Drawing.Pen,System.Drawing.RectangleF,System.Single,System.Single)">
+            <summary>
+            Creates a new <see cref="T:GammaJul.LgLcd.LcdGdiArc"/> with the specified pen, dimensions, start angle and sweep angle.
+            </summary>
+            <param name="pen">Pen to use to draw the edge of this object.</param>
+            <param name="rectangle">Rectangle dimensions.</param>
+            <param name="startAngle">Angle in degrees measured clockwise from the x-axis to the starting point of the arc.</param>
+            <param name="sweepAngle">Angle in degrees measured clockwise from <paramref name="startAngle"/> to ending point of the arc.</param>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiArc.StartAngle">
+            <summary>
+            Gets or sets the angle in degrees measured clockwise from the x-axis to the starting point of the arc.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiArc.SweepAngle">
+            <summary>
+            Gets or sets the angle in degrees measured clockwise from <see cref="P:GammaJul.LgLcd.LcdGdiArc.StartAngle"/> to ending point of the arc. 
+            </summary>
+        </member>
+        <member name="T:GammaJul.LgLcd.LcdSoftButtons">
+            <summary>
+            Flags listing all the soft buttons, used to know which buttons are pressed.
+            </summary>
+        </member>
+        <member name="F:GammaJul.LgLcd.LcdSoftButtons.None">
+            <summary>
+            No buttons are pressed.
+            </summary>
+        </member>
+        <member name="F:GammaJul.LgLcd.LcdSoftButtons.Button0">
+            <summary>
+            The first soft button on a G13/G15/Z10 is pressed.
+            </summary>
+        </member>
+        <member name="F:GammaJul.LgLcd.LcdSoftButtons.Button1">
+            <summary>
+            The second soft button on a G13/G15/Z10 is pressed.
+            </summary>
+        </member>
+        <member name="F:GammaJul.LgLcd.LcdSoftButtons.Button2">
+            <summary>
+            The third soft button on a G13/G15/Z10 is pressed.
+            </summary>
+        </member>
+        <member name="F:GammaJul.LgLcd.LcdSoftButtons.Button3">
+            <summary>
+            The fourth soft button on a G13/G15/Z10 is pressed.
+            </summary>
+        </member>
+        <member name="F:GammaJul.LgLcd.LcdSoftButtons.Button4">
+            <summary>
+            The fifth soft button is pressed. Not present on current devices.
+            </summary>
+        </member>
+        <member name="F:GammaJul.LgLcd.LcdSoftButtons.Button5">
+            <summary>
+            The sixth soft button is pressed. Not present on current devices.
+            </summary>
+        </member>
+        <member name="F:GammaJul.LgLcd.LcdSoftButtons.Button6">
+            <summary>
+            The seventh soft button is pressed. Not present on current devices.
+            </summary>
+        </member>
+        <member name="F:GammaJul.LgLcd.LcdSoftButtons.Button7">
+            <summary>
+            The eight soft button is pressed. Not present on current devices.
+            </summary>
+        </member>
+        <member name="F:GammaJul.LgLcd.LcdSoftButtons.Left">
+            <summary>
+            The left arrow button on a G19 is pressed.
+            </summary>
+        </member>
+        <member name="F:GammaJul.LgLcd.LcdSoftButtons.Right">
+            <summary>
+            The right arrow button on a G19 is pressed.
+            </summary>
+        </member>
+        <member name="F:GammaJul.LgLcd.LcdSoftButtons.Ok">
+            <summary>
+            The Ok button on a G19 is pressed.
+            </summary>
+        </member>
+        <member name="F:GammaJul.LgLcd.LcdSoftButtons.Cancel">
+            <summary>
+            The Cancel button on a G19 is pressed.
+            </summary>
+        </member>
+        <member name="F:GammaJul.LgLcd.LcdSoftButtons.Up">
+            <summary>
+            The up arrow button on a G19 is pressed.
+            </summary>
+        </member>
+        <member name="F:GammaJul.LgLcd.LcdSoftButtons.Down">
+            <summary>
+            The down arrow button on a G19 is pressed.
+            </summary>
+        </member>
+        <member name="F:GammaJul.LgLcd.LcdSoftButtons.Menu">
+            <summary>
+            The Menu button on a G19 is pressed.
+            </summary>
+        </member>
+        <member name="F:GammaJul.LgLcd.LcdSoftButtons.Light">
+            <summary>
+            The Light button is pressed.
+            </summary>
+        </member>
+        <member name="T:GammaJul.LgLcd.LcdDeviceType">
+            <summary>
+            This enumeration lists the types of screen that can be used.
+            </summary>
+        </member>
+        <member name="F:GammaJul.LgLcd.LcdDeviceType.Monochrome">
+            <summary>
+             Any device capable of displaying 160 by 43 monochrome display data (G13/G15/Z10).
+            </summary>
+        </member>
+        <member name="F:GammaJul.LgLcd.LcdDeviceType.Qvga">
+            <summary>
+            any device capable of displaying 320 by 240 color display data (G19).
+            </summary>
+        </member>
+        <member name="T:GammaJul.LgLcd.LcdGdiVerticalAlignment">
+            <summary>
+            Enumeration defining the possible vertical alignments of an object.
+            </summary>
+        </member>
+        <member name="F:GammaJul.LgLcd.LcdGdiVerticalAlignment.Top">
+            <summary>
+            The object is top-aligned.
+            </summary>
+        </member>
+        <member name="F:GammaJul.LgLcd.LcdGdiVerticalAlignment.Middle">
+            <summary>
+            The object is centered.
+            </summary>
+        </member>
+        <member name="F:GammaJul.LgLcd.LcdGdiVerticalAlignment.Bottom">
+            <summary>
+            The object is bottom-aligned.
+            </summary>
+        </member>
+        <member name="F:GammaJul.LgLcd.LcdGdiVerticalAlignment.Stretch">
+            <summary>
+            The object takes the height of the device
+            </summary>
+        </member>
+        <member name="T:GammaJul.LgLcd.LcdGdiProgressBar">
+            <summary>
+            Represents a progress bar on a <see cref="T:GammaJul.LgLcd.LcdGdiPage"/>.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiProgressBar.Draw(GammaJul.LgLcd.LcdGdiPage,System.Drawing.Graphics)">
+            <summary>
+            Draws the progress bar.
+            </summary>
+            <param name="page">Page where this object will be drawn.</param>
+            <param name="graphics"><see cref="T:System.Drawing.Graphics"/> to use for drawing.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiProgressBar.#ctor">
+            <summary>
+            Creates a new <see cref="T:GammaJul.LgLcd.LcdGdiProgressBar"/> with a black edge, white fill
+            and black indicator part, which is the most common for monochrome devices.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiProgressBar.#ctor(System.Drawing.Pen,System.Drawing.Brush,System.Drawing.Brush)">
+            <summary>
+            Creates a new <see cref="T:GammaJul.LgLcd.LcdGdiProgressBar"/> with the specified pen for the edge,
+            brush for the fill, and brush for the progression.
+            </summary>
+            <param name="pen">Pen to use to draw the edge of this object.</param>
+            <param name="brush">Brush to use to draw the fill of this object.</param>
+            <param name="progressBrush">Brush to use to fill the progress indicator.</param>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiProgressBar.ProgressBrush">
+            <summary>
+            Gets or sets the brush that is used to fill the progress indicator.
+            <see cref="T:System.Drawing.Brush"/> is used as a background to the bar,
+            while <see cref="P:GammaJul.LgLcd.LcdGdiProgressBar.ProgressBrush"/> represents the progress part.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiProgressBar.Minimum">
+            <summary>
+            Gets or sets the minimum value of this progress bar.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiProgressBar.Maximum">
+            <summary>
+            Gets or sets the maximum value of this progress bar.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiProgressBar.Value">
+            <summary>
+            Gets or sets the current value of this progress bar.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiProgressBar.IsVertical">
+            <summary>
+            Gets or sets whether this progress bar is vertical.
+            The default value is <c>false</c>.
+            </summary>
+        </member>
+        <member name="T:GammaJul.LgLcd.MarginF">
+            <summary>
+            Describes a margin around an element.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.MarginF.Equals(GammaJul.LgLcd.MarginF)">
+            <summary>
+            Indicates whether the current <see cref="T:GammaJul.LgLcd.MarginF"/> is equal to another <see cref="T:GammaJul.LgLcd.MarginF"/>.
+            </summary>
+            <param name="other">An <see cref="T:GammaJul.LgLcd.MarginF"/> to compare with this <see cref="T:GammaJul.LgLcd.MarginF"/>.</param>
+            <returns><c>true</c> if the current <see cref="T:GammaJul.LgLcd.MarginF"/> is equal to the <paramref name="other"/>
+            parameter; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:GammaJul.LgLcd.MarginF.Equals(System.Object)">
+            <summary>
+            Indicates whether this instance and a specified object are equal.
+            </summary>
+            <param name="obj">Another object to compare to.</param>
+            <returns><c>true</c> if <paramref name="obj"/> and this instance are the same type
+            and represent the same value; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:GammaJul.LgLcd.MarginF.GetHashCode">
+            <summary>
+            Returns the hash code for this instance.
+            </summary>
+            <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
+        </member>
+        <member name="M:GammaJul.LgLcd.MarginF.op_Equality(GammaJul.LgLcd.MarginF,GammaJul.LgLcd.MarginF)">
+            <summary>
+            Indicates whether two <see cref="T:GammaJul.LgLcd.MarginF"/> are equal.
+            </summary>
+            <param name="left">First <see cref="T:GammaJul.LgLcd.MarginF"/>.</param>
+            <param name="right">Second <see cref="T:GammaJul.LgLcd.MarginF"/>.</param>
+            <returns><c>true</c> if <paramref name="left"/> and <paramref name="right"/>
+            are equal; <c>false</c> otherwise.</returns>
+        </member>
+        <member name="M:GammaJul.LgLcd.MarginF.op_Inequality(GammaJul.LgLcd.MarginF,GammaJul.LgLcd.MarginF)">
+            <summary>
+            Indicates whether two <see cref="T:GammaJul.LgLcd.MarginF"/> are different.
+            </summary>
+            <param name="left">First <see cref="T:GammaJul.LgLcd.MarginF"/>.</param>
+            <param name="right">Second <see cref="T:GammaJul.LgLcd.MarginF"/>.</param>
+            <returns><c>true</c> if <paramref name="left"/> and <paramref name="right"/>
+            are different; <c>false</c> otherwise.</returns>
+        </member>
+        <member name="M:GammaJul.LgLcd.MarginF.ToString">
+            <summary>
+            Returns a readable representation of this <see cref="T:GammaJul.LgLcd.MarginF"/>.
+            </summary>
+            <returns>A readable representation of this <see cref="T:GammaJul.LgLcd.MarginF"/>.</returns>
+        </member>
+        <member name="M:GammaJul.LgLcd.MarginF.#ctor(System.Single)">
+            <summary>
+            Creates a new <see cref="T:GammaJul.LgLcd.MarginF"/> with an uniform margin for every side.
+            </summary>
+            <param name="uniformMargin">Uniform margin for every side.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.MarginF.#ctor(System.Single,System.Single)">
+            <summary>
+            Creates a new <see cref="T:GammaJul.LgLcd.MarginF"/> with the specified margin for left and right,
+            and another specified margin for top and bottom.
+            </summary>
+            <param name="horizontalMargin">Left and right margin.</param>
+            <param name="verticalMargin">Top and bottom margin.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.MarginF.#ctor(System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+            Creates a new <see cref="T:GammaJul.LgLcd.MarginF"/> with the specified left, top, right and bottom margins.
+            </summary>
+            <param name="left">Left margin.</param>
+            <param name="top">Top margin.</param>
+            <param name="right">Right margin.</param>
+            <param name="bottom">Bottom margin.</param>
+        </member>
+        <member name="P:GammaJul.LgLcd.MarginF.Left">
+            <summary>
+            Gets or sets the left margin.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.MarginF.Top">
+            <summary>
+            Gets or sets the top margin.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.MarginF.Right">
+            <summary>
+            Gets or sets the right margin.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.MarginF.Bottom">
+            <summary>
+            Gets or sets the bottom margin.
+            </summary>
+        </member>
+        <member name="T:GammaJul.LgLcd.LcdGdiImage">
+            <summary>
+            Represents an image on a <see cref="T:GammaJul.LgLcd.LcdGdiPage"/>.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiImage.Update(System.TimeSpan,System.TimeSpan,GammaJul.LgLcd.LcdGdiPage,System.Drawing.Graphics)">
+            <summary>
+            Updates the position of the object.
+            </summary>
+            <param name="elapsedTotalTime">Time elapsed since the device creation.</param>
+            <param name="elapsedTimeSinceLastFrame">Time elapsed since last frame update.</param>
+            <param name="page">Page where this object will be drawn.</param>
+            <param name="graphics"><see cref="T:System.Drawing.Graphics"/> to use for drawing.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiImage.Draw(GammaJul.LgLcd.LcdGdiPage,System.Drawing.Graphics)">
+            <summary>
+            Draws the image.
+            </summary>
+            <param name="page">Page where this object will be drawn.</param>
+            <param name="graphics"><see cref="T:System.Drawing.Graphics"/> to use for drawing.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiImage.Dispose(System.Boolean)">
+            <summary>
+            Releases the resources associated with this <see cref="T:GammaJul.LgLcd.LcdGdiObject"/>.
+            </summary>
+            <param name="disposing">Whether to also release managed resources along with unmanaged ones.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiImage.#ctor">
+            <summary>
+            Creates a new <see cref="T:GammaJul.LgLcd.LcdGdiImage"/>.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiImage.#ctor(System.Drawing.Image)">
+            <summary>
+            Creates a new <see cref="T:GammaJul.LgLcd.LcdGdiImage"/> with the specified image and pixel alignment enabled.
+            </summary>
+            <param name="image">Image drawn by this object.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiImage.#ctor(System.Drawing.Image,System.Boolean)">
+            <summary>
+            Creates a new <see cref="T:GammaJul.LgLcd.LcdGdiImage"/> with the specified image and pixel alignment.
+            </summary>
+            <param name="image">Image drawn by this object.</param>
+            <param name="alignOnPixels">Whether the image will be kept aligned on full pixels to avoid blurry results.</param>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiImage.Image">
+            <summary>
+            Gets or sets the image drawn by this object.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiImage.AlignOnPixels">
+            <summary>
+            Gets or sets whether the image will be kept aligned on full pixels
+            to avoid blurry results. The default is <c>true</c>.
+            </summary>
+        </member>
+        <member name="T:GammaJul.LgLcd.LcdGdiCurve">
+            <summary>
+            Represents a cardinal spline on a <see cref="T:GammaJul.LgLcd.LcdGdiPage"/>.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiCurve.SetPoints(System.Drawing.PointF[],System.Boolean,System.Boolean)">
+            <summary>
+            Changes the points of the curve.
+            </summary>
+            <param name="points">Points delimiting the curve.</param>
+            <param name="isClosed">Whether the curve is closed.</param>
+            <param name="keepAbsolute">Whether the given points are left untouched.
+            <see cref="P:GammaJul.LgLcd.LcdGdiAbsObject.KeepAbsolute"/> for details.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiCurve.Draw(GammaJul.LgLcd.LcdGdiPage,System.Drawing.Graphics)">
+            <summary>
+            Draws the cardinal spline.
+            </summary>
+            <param name="page">Page where this object will be drawn.</param>
+            <param name="graphics"><see cref="T:System.Drawing.Graphics"/> to use for drawing.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiCurve.#ctor">
+            <summary>
+            Creates a new <see cref="T:GammaJul.LgLcd.LcdGdiCurve"/>.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiCurve.#ctor(System.Drawing.Pen,System.Drawing.PointF[],System.Boolean,System.Boolean)">
+            <summary>
+            Creates a new <see cref="T:GammaJul.LgLcd.LcdGdiCurve"/> with the specified pen for the edge,
+            points, and whether the curve is closed.
+            </summary>
+            <param name="pen">Pen used to draw the edge of the curve.</param>
+            <param name="points">Points delimiting the curve.</param>
+            <param name="isClosed">Whether the curve is closed.</param>
+            <param name="keepAbsolute">Whether the given points are left untouched.
+            <see cref="P:GammaJul.LgLcd.LcdGdiAbsObject.KeepAbsolute"/> for details.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiCurve.#ctor(System.Drawing.Pen,System.Drawing.PointF[],System.Boolean,System.Single,System.Boolean)">
+            <summary>
+            Creates a new <see cref="T:GammaJul.LgLcd.LcdGdiCurve"/> with the specified pen for the edge,
+            points, tension, and whether the curve is closed.
+            </summary>
+            <param name="pen">Pen used to draw the edge of the curve.</param>
+            <param name="points">Points delimiting the curve.</param>
+            <param name="isClosed">Whether the curve is closed.</param>
+            <param name="tension">A value greater than or equal to 0.0f that specifies the tension of the curve.</param>
+            <param name="keepAbsolute">Whether the given points are left untouched.
+            <see cref="P:GammaJul.LgLcd.LcdGdiAbsObject.KeepAbsolute"/> for details.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiCurve.#ctor(System.Drawing.Pen,System.Drawing.Brush,System.Drawing.PointF[],System.Boolean)">
+            <summary>
+            Creates a new closed <see cref="T:GammaJul.LgLcd.LcdGdiCurve"/> with the specified pen for the edge,
+            brush for the fill, and points.
+            </summary>
+            <param name="pen">Pen used to draw the edge of the curve.</param>
+            <param name="brush">Brush used to fill the closed curve.</param>
+            <param name="points">Points delimiting the curve.</param>
+            <param name="keepAbsolute">Whether the given points are left untouched.
+            <see cref="P:GammaJul.LgLcd.LcdGdiAbsObject.KeepAbsolute"/> for details.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiCurve.#ctor(System.Drawing.Brush,System.Drawing.PointF[],System.Boolean)">
+            <summary>
+            Creates a new closed <see cref="T:GammaJul.LgLcd.LcdGdiCurve"/> with the specified brush for the fill
+            and points.
+            </summary>
+            <param name="brush">Brush used to fill the closed curve.</param>
+            <param name="points">Points delimiting the curve.</param>
+            <param name="keepAbsolute">Whether the given points are left untouched.
+            <see cref="P:GammaJul.LgLcd.LcdGdiAbsObject.KeepAbsolute"/> for details.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiCurve.#ctor(System.Drawing.Brush,System.Drawing.PointF[],System.Single,System.Boolean)">
+            <summary>
+            Creates a new closed <see cref="T:GammaJul.LgLcd.LcdGdiCurve"/> with the specified brush for the fill,
+            points and tension.
+            </summary>
+            <param name="brush">Brush used to fill the closed curve.</param>
+            <param name="points">Points delimiting the curve.</param>
+            <param name="tension">A value greater than or equal to 0.0f that specifies the tension of the curve.</param>
+            <param name="keepAbsolute">Whether the given points are left untouched.
+            <see cref="P:GammaJul.LgLcd.LcdGdiAbsObject.KeepAbsolute"/> for details.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiCurve.#ctor(System.Drawing.Pen,System.Drawing.Brush,System.Drawing.PointF[],System.Single,System.Boolean)">
+            <summary>
+            Creates a new closed <see cref="T:GammaJul.LgLcd.LcdGdiCurve"/> with the specified pen for the edge,
+            brush for the fill, points and tension.
+            </summary>
+            <param name="pen">Pen used to draw the edge of the curve.</param>
+            <param name="brush">Brush used to fill the closed curve.</param>
+            <param name="points">Points delimiting the curve.</param>
+            <param name="tension">A value greater than or equal to 0.0f that specifies the tension of the curve.</param>
+            <param name="keepAbsolute">Whether the given points are left untouched.
+            <see cref="P:GammaJul.LgLcd.LcdGdiAbsObject.KeepAbsolute"/> for details.</param>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiCurve.IsClosed">
+            <summary>
+            Gets or sets whether the curve is closed.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiCurve.FillMode">
+            <summary>
+            Gets or sets a member of the <see cref="P:GammaJul.LgLcd.LcdGdiCurve.FillMode"/> enumeration that determines how the curve is filled.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiCurve.Tension">
+            <summary>
+            Gets or sets a value greater than or equal to 0.0f that specifies the tension of the curve.
+            The default is 0.5f.
+            </summary>
+        </member>
+        <member name="T:GammaJul.LgLcd.LcdGdiIcon">
+            <summary>
+            Represents an icon on a <see cref="T:GammaJul.LgLcd.LcdGdiPage"/>.
+            Contrary to an image, an icon is always pixel-aligned.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiIcon.Update(System.TimeSpan,System.TimeSpan,GammaJul.LgLcd.LcdGdiPage,System.Drawing.Graphics)">
+            <summary>
+            Updates the position of the object.
+            </summary>
+            <param name="elapsedTotalTime">Time elapsed since the device creation.</param>
+            <param name="elapsedTimeSinceLastFrame">Time elapsed since last frame update.</param>
+            <param name="page">Page where this object will be drawn.</param>
+            <param name="graphics"><see cref="T:System.Drawing.Graphics"/> to use for drawing.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiIcon.Draw(GammaJul.LgLcd.LcdGdiPage,System.Drawing.Graphics)">
+            <summary>
+            Draws the image.
+            </summary>
+            <param name="page">Page where this object will be drawn.</param>
+            <param name="graphics"><see cref="T:System.Drawing.Graphics"/> to use for drawing.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiIcon.Dispose(System.Boolean)">
+            <summary>
+            Releases the resources associated with this <see cref="T:GammaJul.LgLcd.LcdGdiObject"/>.
+            </summary>
+            <param name="disposing">Whether to also release managed resources along with unmanaged ones.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiIcon.#ctor">
+            <summary>
+            Creates a new <see cref="T:GammaJul.LgLcd.LcdGdiIcon"/>.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiIcon.#ctor(System.Drawing.Icon)">
+            <summary>
+            Creates a new <see cref="T:GammaJul.LgLcd.LcdGdiIcon"/> with the specified icon.
+            </summary>
+            <param name="icon">Icon drawn by this object.</param>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiIcon.Icon">
+            <summary>
+            Gets or sets the icon drawn by this object.
+            </summary>
+        </member>
+        <member name="T:GammaJul.LgLcd.LcdApplet">
+            <summary>
+            This class represent a single LCD applet.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdApplet.OnConfigure">
+            <summary>
+            Raises the <see cref="E:GammaJul.LgLcd.LcdApplet.Configure"/> event.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdApplet.OnDeviceArrival(GammaJul.LgLcd.LcdDeviceType)">
+            <summary>
+            Raises the <see cref="E:GammaJul.LgLcd.LcdApplet.DeviceArrival"/> event.
+            </summary>
+            <param name="deviceType">The device type that has arrived.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdApplet.OnDeviceRemoval(GammaJul.LgLcd.LcdDeviceType)">
+            <summary>
+            Raises the <see cref="E:GammaJul.LgLcd.LcdApplet.DeviceRemoval"/> event.
+            </summary>
+            <param name="deviceType">The device type that was removed.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdApplet.OnIsEnabledChanged">
+            <summary>
+            Raises the <see cref="E:GammaJul.LgLcd.LcdApplet.IsEnabledChanged"/> event.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdApplet.OnConnectionDisrupted">
+            <summary>
+            Raises the <see cref="E:GammaJul.LgLcd.LcdApplet.ConnectionDisrupted"/> event.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdApplet.VerifyConnected">
+            <summary>
+            Ensures that we are connected; throw an exception otherwise.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdApplet.VerifyNotConnected">
+            <summary>
+            Ensures that we are not connected yet; throw an exception otherwise.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdApplet.VerifyValid">
+            <summary>
+            Ensures that the object is not disposed.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdApplet.Connect">
+            <summary>
+            Establishes a connection to the LCD monitor process.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdApplet.Disconnect">
+            <summary>
+            Close an existing connection to the LCD monitor process.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdApplet.OpenDeviceByType(GammaJul.LgLcd.LcdDeviceType)">
+            <summary>
+            Opens a device of a given type.
+            This function is generally called after a <see cref="E:GammaJul.LgLcd.LcdApplet.DeviceArrival"/> event has been received.
+            </summary>
+            <param name="deviceType">Type of the device to open.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdApplet.Dispose">
+            <summary>
+            Releases the resources associated with this <see cref="T:GammaJul.LgLcd.LcdApplet"/>.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdApplet.Dispose(System.Boolean)">
+            <summary>
+            Releases the resources associated with this <see cref="T:GammaJul.LgLcd.LcdApplet"/>.
+            </summary>
+            <param name="disposing">Whether to also release managed resources along with unmanaged ones.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdApplet.#ctor">
+            <summary>
+            Creates a new instance of <see cref="T:GammaJul.LgLcd.LcdApplet"/> that support both monochrome and QVGA devices.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdApplet.#ctor(System.String)">
+            <summary>
+            Creates a new instance of <see cref="T:GammaJul.LgLcd.LcdApplet"/> that support both monochrome and QVGA devices,
+            with the specified friendly name.
+            </summary>
+            <param name="friendlyName">Friendly name of the applet that is displayed in LCD Monitor.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdApplet.#ctor(System.String,GammaJul.LgLcd.LcdAppletCapabilities)">
+            <summary>
+            Creates a new instance of <see cref="T:GammaJul.LgLcd.LcdApplet"/> with the specified friendly name and capabilities.
+            </summary>
+            <param name="friendlyName">Friendly name of the applet that is displayed in LCD Monitor.</param>
+            <param name="capabilities">Gets or sets the capabilities that this applet supports.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdApplet.#ctor(System.String,GammaJul.LgLcd.LcdAppletCapabilities,System.Boolean)">
+            <summary>
+            Creates a new instance of <see cref="T:GammaJul.LgLcd.LcdApplet"/> with the specified friendly name, capabilities and auto-startable flag.
+            </summary>
+            <param name="friendlyName">Friendly name of the applet that is displayed in LCD Monitor.</param>
+            <param name="capabilities">Gets or sets the capabilities that this applet supports.</param>
+            <param name="isAutoStartable">Whether this applet has the option to be auto-startable.</param>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdApplet.IsConnected">
+            <summary>
+            Gets whether the applet is connected.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdApplet.IsDisposed">
+            <summary>
+            Gets whether the applet has been disposed.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdApplet.IsEnabled">
+            <summary>
+            Gets whether the applet is enabled.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdApplet.FriendlyName">
+            <summary>
+            Gets or sets the friendly name of the applet that is displayed in LCD Monitor.
+            Note that changing this property must be done before calling <see cref="M:GammaJul.LgLcd.LcdApplet.Connect"/>.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdApplet.IsAutoStartable">
+            <summary>
+            Gets or sets whether this applet has the option to be auto-startable.
+            The default is <c>false</c>.
+            Note that changing this property must be done before calling <see cref="M:GammaJul.LgLcd.LcdApplet.Connect"/>.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdApplet.Capabilities">
+            <summary>
+            Gets or sets the capabilities that this applet supports.
+            The default is <see cref="F:GammaJul.LgLcd.LcdAppletCapabilities.Monochrome"/>.
+            Note that changing this property must be done before calling <see cref="M:GammaJul.LgLcd.LcdApplet.Connect"/>.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdApplet.ConnectionNumber">
+            <summary>
+            Gets the internal number of this applet.
+            </summary>
+        </member>
+        <member name="E:GammaJul.LgLcd.LcdApplet.Configure">
+            <summary>
+            Occurs when the Configure button in the LCD Monitor configuration is clicked.
+            Note that suscribing or unsuscribing to this event must be done before calling <see cref="M:GammaJul.LgLcd.LcdApplet.Connect"/>.
+            Note that this event is raised in the context of a thread within the library.
+            Therefore, take the necessary precautions for thread safety.
+            </summary>
+        </member>
+        <member name="E:GammaJul.LgLcd.LcdApplet.DeviceArrival">
+            <summary>
+            Occurs when at least one device that the applet supports (as indicated by <see cref="P:GammaJul.LgLcd.LcdApplet.Capabilities"/>)
+            arrives in the system. A device arrival can also be triggered when the user enables a device that
+            was previously disabled.
+            Note that this event is raised in the context of a thread within the library.
+            Therefore, take the necessary precautions for thread safety.
+            </summary>
+        </member>
+        <member name="E:GammaJul.LgLcd.LcdApplet.DeviceRemoval">
+            <summary>
+            Occurs when the user disables all devices of a given type, or when all physical devices of a given
+            type have been unplugged.
+            Note that this event is raised in the context of a thread within the library.
+            Therefore, take the necessary precautions for thread safety.
+            </summary>
+        </member>
+        <member name="E:GammaJul.LgLcd.LcdApplet.IsEnabledChanged">
+            <summary>
+            Occurs when the applet is enabled or disabled using the Progams configuration panel on the LCD Manager
+            (LCDMon) application program. The global enable and disable functions are initiated by the user on this
+            configuration screen.
+            Note that this event is raised in the context of a thread within the library.
+            Therefore, take the necessary precautions for thread safety.
+            </summary>
+        </member>
+        <member name="E:GammaJul.LgLcd.LcdApplet.ConnectionDisrupted">
+            <summary>
+            Occurs when the applet’s connection to the LCD Manager application is disrupted for any reason.
+            Note that this event is raised in the context of a thread within the library.
+            Therefore, take the necessary precautions for thread safety.
+            </summary>
+        </member>
+        <member name="T:GammaJul.LgLcd.LgLcdPermissionAttribute">
+            <summary>
+            Allows security actions for <see cref="T:GammaJul.LgLcd.LgLcdPermission"/> to be applied to code using declarative security.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LgLcdPermissionAttribute.CreatePermission">
+            <summary>
+            Creates a permission object that can then be serialized into binary form and
+            persistently stored along with the <see cref="T:System.Security.Permissions.SecurityAction"/> in an assembly's metadata.
+            </summary>
+            <returns>A serializable permission object.</returns>
+        </member>
+        <member name="M:GammaJul.LgLcd.LgLcdPermissionAttribute.#ctor(System.Security.Permissions.SecurityAction)">
+            <summary>
+            Initializes a new instance of the <see cref="T:GammaJul.LgLcd.LgLcdPermissionAttribute"/> class
+            with the specified <see cref="T:System.Security.Permissions.SecurityAction"/>. 
+            </summary>
+            <param name="action">One of the <see cref="T:System.Security.Permissions.SecurityAction"/> values.</param>
+        </member>
+        <member name="P:GammaJul.LgLcd.LgLcdPermissionAttribute.Monochrome">
+            <summary>
+            Gets or sets whether the usage of monochrome devices is allowed.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LgLcdPermissionAttribute.Qvga">
+            <summary>
+            Gets or sets whether the usage of QVGA devices is allowed.
+            </summary>
+        </member>
+        <member name="T:GammaJul.LgLcd.LcdDeviceTypeEventArgs">
+            <summary>
+            Event arguments for event that notify about a given device type.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdDeviceTypeEventArgs.#ctor(GammaJul.LgLcd.LcdDeviceType)">
+            <summary>
+            Creates a new instance of <see cref="T:GammaJul.LgLcd.LcdDeviceTypeEventArgs"/> with the specified device type.
+            </summary>
+            <param name="deviceType"><see cref="T:GammaJul.LgLcd.LcdDeviceType"/> represented by these arguments.</param>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdDeviceTypeEventArgs.DeviceType">
+            <summary>
+            Gets the <see cref="T:GammaJul.LgLcd.LcdDeviceType"/> represented by these arguments.
+            </summary>
+        </member>
+        <member name="T:GammaJul.LgLcd.UpdateEventArgs">
+            <summary>
+            Event arguments used when updating a page.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.UpdateEventArgs.#ctor(System.TimeSpan,System.TimeSpan)">
+            <summary>
+            Creates a new instance of <see cref="T:GammaJul.LgLcd.UpdateEventArgs"/> with the given elapsed total time
+            and elapsed time since last frame.
+            </summary>
+            <param name="elapsedTotalTime">Total time elapsed since the creation of the device.</param>
+            <param name="elapsedTimeSinceLastFrame">Time elapsed since the last frame update on this page.</param>
+        </member>
+        <member name="P:GammaJul.LgLcd.UpdateEventArgs.ElapsedTotalTime">
+            <summary>
+            Gets the total time elapsed since the creation of the device.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.UpdateEventArgs.ElapsedTimeSinceLastFrame">
+            <summary>
+            Gets the time elapsed since the last frame update on this page.
+            </summary>
+        </member>
+        <member name="T:GammaJul.LgLcd.LcdUpdateMode">
+            <summary>
+            Specify how the screen will be updated.
+            </summary>
+        </member>
+        <member name="F:GammaJul.LgLcd.LcdUpdateMode.Async">
+            <summary>
+            The screen will be updated asynchronously. This is the default.
+            </summary>
+        </member>
+        <member name="F:GammaJul.LgLcd.LcdUpdateMode.Sync">
+            <summary>
+            The screen will be updated synchronously. Note that this take about 30ms.
+            </summary>
+        </member>
+        <member name="F:GammaJul.LgLcd.LcdUpdateMode.SyncCompleteWithinFrame">
+            <summary>
+            The screen will be updated synchronously. If the screen hasn't been updated after 30ms,
+            <see cref="M:GammaJul.LgLcd.LcdDevice.UpdateBitmap(System.Byte[],GammaJul.LgLcd.LcdPriority,GammaJul.LgLcd.LcdUpdateMode)"/> will return <c>false</c>.
+            </summary>
+        </member>
+        <member name="T:GammaJul.LgLcd.LcdDeviceMonochrome">
+            <summary>
+            Encapsulates a 160x43 monochrome LCD device.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdDeviceMonochrome.UpdateBitmapCore(System.Byte[],GammaJul.LgLcd.LcdPriority,GammaJul.LgLcd.LcdUpdateMode)">
+            <summary>
+            Really updates a bitmap of the device.
+            </summary>
+            <param name="pixels">An array of pixels constituting the bitmap. See the SDK help for more information.</param>
+            <param name="priority">Priority of the update.</param>
+            <param name="updateMode">Update mode (synchronous or asynchronous).</param>
+            <returns>
+            If <paramref name="updateMode"/> is <see cref="F:GammaJul.LgLcd.LcdUpdateMode.SyncCompleteWithinFrame"/>, this function returns
+            <c>true</c> if the bitmap was corrently updated within the synchronous time frame and <c>false otherwise</c>.
+            For every other mode, this function always returns <c>true</c>.
+            </returns>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdDeviceMonochrome.#ctor(GammaJul.LgLcd.LcdApplet)">
+            <summary>
+            Creates a new instance of <see cref="T:GammaJul.LgLcd.LcdDeviceMonochrome"/> for the given applet.
+            </summary>
+            <param name="applet"><see cref="T:GammaJul.LgLcd.LcdApplet"/> that opened this device.</param>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdDeviceMonochrome.PixelWidth">
+            <summary>
+            Gets the width of this device, in pixels.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdDeviceMonochrome.PixelHeight">
+            <summary>
+            Gets the height of this device, in pixels.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdDeviceMonochrome.BitsPerPixel">
+            <summary>
+            Gets the number of bits per pixel (aka color depth) of this device.
+            </summary>
+        </member>
+        <member name="T:GammaJul.LgLcd.DrawnEventArgs">
+            <summary>
+            Event arguments for event that notify about drawing completed.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.DrawnEventArgs.#ctor(System.Byte[])">
+            <summary>
+            Creates a new instance of <see cref="T:GammaJul.LgLcd.DrawnEventArgs"/> with the specified pixels array.
+            </summary>
+            <param name="pixels">Pixels array that will be used to update the device.</param>
+        </member>
+        <member name="P:GammaJul.LgLcd.DrawnEventArgs.Pixels">
+            <summary>
+            Gets the pixels array that will be used to update the device.
+            Note that you can modify this array here in order to do some sort of post-processing on the pixels.
+            </summary>
+        </member>
+        <member name="T:GammaJul.LgLcd.LcdGdiBezier">
+            <summary>
+            Represents a Bézier curve on a <see cref="T:GammaJul.LgLcd.LcdGdiPage"/>.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiBezier.SetPoints(System.Drawing.PointF,System.Drawing.PointF,System.Drawing.PointF,System.Drawing.PointF,System.Boolean)">
+            <summary>
+            Changes the four points of the Bézier curve at the same time.
+            </summary>
+            <param name="startPoint">Starting point of the Bézier curve</param>
+            <param name="controlPoint1">First control point of the Bézier curve.</param>
+            <param name="controlPoint2">Second control point of the Bézier curve.</param>
+            <param name="endPoint">Ending point of the Bézier curve.</param>
+            <param name="keepAbsolute">Whether the given points are left untouched.
+            <see cref="P:GammaJul.LgLcd.LcdGdiAbsObject.KeepAbsolute"/> for details.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiBezier.Draw(GammaJul.LgLcd.LcdGdiPage,System.Drawing.Graphics)">
+            <summary>
+            Draws the curve.
+            </summary>
+            <param name="page">Page where this object will be drawn.</param>
+            <param name="graphics"><see cref="T:System.Drawing.Graphics"/> to use for drawing.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiBezier.#ctor">
+            <summary>
+            Creates a new <see cref="T:GammaJul.LgLcd.LcdGdiBezier"/>.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiBezier.#ctor(System.Drawing.Pen,System.Drawing.PointF,System.Drawing.PointF,System.Drawing.PointF,System.Drawing.PointF,System.Boolean)">
+            <summary>
+            Creates a new <see cref="T:GammaJul.LgLcd.LcdGdiBezier"/> with the specified pen and points.
+            </summary>
+            <param name="pen">Pen to use to draw this Bézier curve.</param>
+            <param name="startPoint">Starting point of the Bézier curve</param>
+            <param name="controlPoint1">First control point of the Bézier curve.</param>
+            <param name="controlPoint2">Second control point of the Bézier curve.</param>
+            <param name="endPoint">Ending point of the Bézier curve.</param>
+            <param name="keepAbsolute">Whether the given points are left untouched.
+            <see cref="P:GammaJul.LgLcd.LcdGdiAbsObject.KeepAbsolute"/> for details.</param>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiBezier.StartPoint">
+            <summary>
+            Gets or sets the starting point of the Bézier curve.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiBezier.ControlPoint1">
+            <summary>
+            Gets or sets the first control point of the Bézier curve.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiBezier.ControlPoint2">
+            <summary>
+            Gets or sets the second control point of the Bézier curve.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiBezier.EndPoint">
+            <summary>
+            Gets or sets the end point of the Bézier curve.
+            </summary>
+        </member>
+        <member name="T:GammaJul.LgLcd.LcdSoftButtonsEventArgs">
+            <summary>
+            Event arguments for event that notify about pressing/releasing soft buttons.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdSoftButtonsEventArgs.#ctor(GammaJul.LgLcd.LcdSoftButtons)">
+            <summary>
+            Creates a new instance of <see cref="T:GammaJul.LgLcd.LcdSoftButtonsEventArgs"/> with the specified soft buttons.
+            </summary>
+            <param name="softButtons"><see cref="T:GammaJul.LgLcd.LcdSoftButtons"/> represented by these arguments.</param>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdSoftButtonsEventArgs.SoftButtons">
+            <summary>
+            Gets the <see cref="T:GammaJul.LgLcd.LcdSoftButtons"/> represented by these arguments.
+            </summary>
+        </member>
+        <member name="T:GammaJul.LgLcd.LcdGdiLine">
+            <summary>
+            Represents a simple line on a <see cref="T:GammaJul.LgLcd.LcdGdiPage"/>.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiLine.SetPoints(System.Drawing.PointF,System.Drawing.PointF)">
+            <summary>
+            Changes both the starting point and the ending point of this line.
+            </summary>
+            <param name="startPoint">Starting point of this line.</param>
+            <param name="endPoint">Ending point of this line.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiLine.Update(System.TimeSpan,System.TimeSpan,GammaJul.LgLcd.LcdGdiPage,System.Drawing.Graphics)">
+            <summary>
+            Updates the position of the object.
+            </summary>
+            <param name="elapsedTotalTime">Time elapsed since the device creation.</param>
+            <param name="elapsedTimeSinceLastFrame">Time elapsed since last frame update.</param>
+            <param name="page">Page where this object will be drawn.</param>
+            <param name="graphics"><see cref="T:System.Drawing.Graphics"/> to use for drawing.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiLine.Draw(GammaJul.LgLcd.LcdGdiPage,System.Drawing.Graphics)">
+            <summary>
+            Draws the rectangle.
+            </summary>
+            <param name="page">Page where this object will be drawn.</param>
+            <param name="graphics"><see cref="T:System.Drawing.Graphics"/> to use for drawing.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiLine.OnChanged">
+            <summary>
+            Raises the <see cref="E:GammaJul.LgLcd.LcdGdiObject.Changed"/> event.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiLine.#ctor">
+            <summary>
+            Creates a new <see cref="T:GammaJul.LgLcd.LcdGdiLine"/>.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiLine.#ctor(System.Drawing.Pen,System.Drawing.PointF,System.Drawing.PointF)">
+            <summary>
+            Creates a new <see cref="T:GammaJul.LgLcd.LcdGdiLine"/> with the specified pen, start point and end point.
+            </summary>
+            <param name="pen">Pen to use to draw this line.</param>
+            <param name="startPoint">Starting point of this line.</param>
+            <param name="endPoint">Ending point of this line.</param>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiLine.StartPointForDrawing">
+            <summary>
+            Gets the starting point of this line, from absolute position and final size.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiLine.EndPointForDrawing">
+            <summary>
+            Gets the ending point of this line, from absolute position and final size.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiLine.StartPoint">
+            <summary>
+            Gets or sets the starting point of this line.
+            </summary>
+        </member>
+        <member name="P:GammaJul.LgLcd.LcdGdiLine.EndPoint">
+            <summary>
+            Gets or sets the ending point of this line.
+            </summary>
+        </member>
+        <member name="T:GammaJul.LgLcd.LcdGdiRectangle">
+            <summary>
+            Represents a simple rectangle on a <see cref="T:GammaJul.LgLcd.LcdGdiPage"/>.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiRectangle.Draw(GammaJul.LgLcd.LcdGdiPage,System.Drawing.Graphics)">
+            <summary>
+            Draws the rectangle.
+            </summary>
+            <param name="page">Page where this object will be drawn.</param>
+            <param name="graphics"><see cref="T:System.Drawing.Graphics"/> to use for drawing.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiRectangle.#ctor">
+            <summary>
+            Creates a new <see cref="T:GammaJul.LgLcd.LcdGdiRectangle"/>.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiRectangle.#ctor(System.Drawing.Brush,System.Drawing.RectangleF)">
+            <summary>
+            Creates a new <see cref="T:GammaJul.LgLcd.LcdGdiRectangle"/> with no edge,
+            and specified brush for the fill and rectangle dimensions.
+            </summary>
+            <param name="brush">Brush to use to draw the fill of this object.</param>
+            <param name="rectangle">Rectangle dimensions.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiRectangle.#ctor(System.Drawing.Pen,System.Drawing.RectangleF)">
+            <summary>
+            Creates a new <see cref="T:GammaJul.LgLcd.LcdGdiRectangle"/> with the specified pen for the edge,
+            no fill brush and specified rectangle dimensions.
+            </summary>
+            <param name="pen">Pen to use to draw the edge of this object.</param>
+            <param name="rectangle">Rectangle dimensions.</param>
+        </member>
+        <member name="M:GammaJul.LgLcd.LcdGdiRectangle.#ctor(System.Drawing.Pen,System.Drawing.Brush,System.Drawing.RectangleF)">
+            <summary>
+            Creates a new <see cref="T:GammaJul.LgLcd.LcdGdiRectangle"/> with the specified pen for the edge,
+            brush for the fill and rectangle dimensions.
+            </summary>
+            <param name="pen">Pen to use to draw the edge of this object.</param>
+            <param name="brush">Brush to use to draw the fill of this object.</param>
+            <param name="rectangle">Rectangle dimensions.</param>
+        </member>
+    </members>
+</doc>

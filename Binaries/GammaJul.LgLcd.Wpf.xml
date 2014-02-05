@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GammaJul.LgLcd.Wpf</name>
+    </assembly>
+    <members>
+        <member name="T:GammaJul.LgLcd.Wpf.LcdWpfPage">
+            <summary>
+            A <see cref="T:GammaJul.LgLcd.LcdPage"/> that can be used to show any WPF element.
+            </summary>
+        </member>
+        <member name="M:GammaJul.LgLcd.Wpf.LcdWpfPage.UpdateCore(System.TimeSpan,System.TimeSpan)">
+            <summary>
+            Updates the page content.
+            </summary>
+            <param name="elapsedTotalTime">Time elapsed since the device creation.</param>
+            <param name="elapsedTimeSinceLastFrame">Time elapsed since last frame update.</param>
+            <returns><c>true</c> if the update has done something and a redraw is required.</returns>
+        </member>
+        <member name="M:GammaJul.LgLcd.Wpf.LcdWpfPage.DrawCore">
+            <summary>
+            Draws the page element.
+            </summary>
+            <returns>Implementors must return a pixel array conforming to
+            <see cref="P:GammaJul.LgLcd.LcdPage.Device"/>'s <see cref="P:GammaJul.LgLcd.LcdDevice.DeviceType"/>.</returns>
+        </member>
+        <member name="M:GammaJul.LgLcd.Wpf.LcdWpfPage.#ctor(GammaJul.LgLcd.LcdDevice)">
+            <summary>
+            Creates a new <see cref="T:GammaJul.LgLcd.Wpf.LcdWpfPage"/> for a given QVGA device.
+            This type of page is not supported on a monochrome device.
+            </summary>
+            <param name="device">Device on which to create the page.</param>
+        </member>
+        <member name="P:GammaJul.LgLcd.Wpf.LcdWpfPage.Element">
+            <summary>
+            Gets or sets the element to show.
+            </summary>
+        </member>
+    </members>
+</doc>
