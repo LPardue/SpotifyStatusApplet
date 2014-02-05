@@ -1,7 +1,12 @@
 SpotifyStatusApplet
 ===================
 
-An LCD Applet for the Logitech Gaming keyboard family (G510, G13, G15 etc) that displays current track information.
+An LCD Applet for the Logitech Gaming keyboard family (G510, G13, G15 etc) that displays current track information and Spotify playback status.
+
+Spotify provides out-of-the box integration with the keyboard media keys, so SpotifyStatusApplet provides a mechanism to interact with Spotify without needing to open the application window.
+
+
+![alt text](Example.jpg "Example display of SpotifyStatusApplet")
 
 Running
 --------------------------------------
