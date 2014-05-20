@@ -181,7 +181,11 @@ namespace JariZ
         /// <returns></returns>
         public static string GetOAuth()
         {
-            string raw = new WebClient().DownloadString("https://embed.spotify.com/openplay/?uri=spotify:track:5Zp4SWOpbuOdnsxLqwgutt");
+            WebClient client = new WebClient();
+            client.Headers.Add("User-Agent: SpotifyAPI");
+
+            string raw = client.DownloadString("https://embed.spotify.com/openplay/?uri=spotify:track:6uQ192yNyZ4W8yoaL0Sb9p");
+            
             raw = raw.Replace(" ", "");
             string[] lines = raw.Split(new string[] { "\n" }, StringSplitOptions.None);
             foreach (string line in lines)
