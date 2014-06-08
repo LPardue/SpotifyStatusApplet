@@ -26,6 +26,7 @@ namespace JariZ
             //emulate the embed code [NEEDED]
             wc.Headers.Add("Origin", "https://embed.spotify.com");
             wc.Headers.Add("Referer", "https://embed.spotify.com/?uri=spotify:track:5Zp4SWOpbuOdnsxLqwgutt");
+            wc.Encoding = Encoding.UTF8;
         }
 
         /// <summary>
