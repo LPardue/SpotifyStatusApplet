@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Spotify Status Applet")]
-[assembly: AssemblyDescription("Spotify Status Applet")]
+[assembly: AssemblyTitle("SpotifyStatusApplet")]
+[assembly: AssemblyDescription("An LCD Applet for the Logitech Gaming keyboard family (G510, G13, G15 etc) that displays current track information and Spotify playback status.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Spotify Status Applet")]
-[assembly: AssemblyCopyright("")]
+[assembly: AssemblyCompany("Lucas Pardue")]
+[assembly: AssemblyProduct("SpotifyStatusApplet")]
+[assembly: AssemblyCopyright("Copyright © 2014. All Rights reserved.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("1.1.0.0")]
+[assembly: AssemblyFileVersion("1.1.0.0")]
