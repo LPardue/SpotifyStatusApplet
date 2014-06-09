@@ -8,14 +8,18 @@ Spotify provides out-of-the box integration with the keyboard media keys, so Spo
 
 ![alt text](Example.jpg "Example display of SpotifyStatusApplet")
 
-Binaries
+Binaries & Installation
 --------------------------------------
 Binaries are available at http://lucaspardue.com/spotifystatusapplet
+
+The applet is provided as a zip file that can be extracted to any location.
 
 Running
 --------------------------------------
 
-SpotifyStatusApplet is dependent on:
+SpotifyStatusApplet runs as a tray icon. Once launched, the icon can be right-clicked to bring up a context menu that allows the application to be exited.
+
+is dependent on:
 
 - An instance of Spotify running (of course!). The applet utilises the Spotify service SpotifyWebHelper.exe to access information, further details are available at [Spotify Local API](https://code.google.com/p/spotify-local-api/)
 - A compatible [Logitech Gaming Keyboard](http://gaming.logitech.com/en-gb/gaming-keyboards) with LCD and official Logitech drivers / software installed. The software has only been tested on a G510 to date but support for all LCD equipped devices is expected.
