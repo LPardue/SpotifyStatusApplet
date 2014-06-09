@@ -8,6 +8,10 @@ Spotify provides out-of-the box integration with the keyboard media keys, so Spo
 
 ![alt text](Example.jpg "Example display of SpotifyStatusApplet")
 
+Binaries
+--------------------------------------
+Binaries are available at http://lucaspardue.com/spotifystatusapplet
+
 Running
 --------------------------------------
 
