@@ -20,7 +20,7 @@
         </member>
         <member name="M:JariZ.SpotifyAPI.GetOAuth">
             <summary>
-            Recieves a OAuth key from the Spotify site
+            Recieves an OAuth key from the Spotify site
             </summary>
             <returns></returns>
         </member>

@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Net;
 using Newtonsoft.Json;
+using System.Text.RegularExpressions;
+using System.Threading;
 
 namespace JariZ
 {
@@ -13,16 +15,22 @@ namespace JariZ
         private string _oauth;
         private string _host;
         private string _cfid;
+
+        private WebClient wc;
+
         /// <summary>
         /// Initializes a new SpotifyAPI object which can be used to recieve
         /// </summary>
         /// <param name="OAuth">Use <seealso cref="SpotifyAPI.GetOAuth()"/> to get this, Or specify your own</param>
         /// <param name="Host">Most of the time 127.0.0.1, or for lulz use something like my-awesome-program.spotilocal.com</param>
-        public SpotifyAPI(string OAuth, string Host)
+        public SpotifyAPI(string OAuth, string Host = "127.0.0.1")
         {
             _oauth = OAuth;
             _host = Host;
 
+            wc = new WebClient();
+            wc.Encoding = Encoding.UTF8;
+            wc.Headers.Add("User-Agent: SpotifyAPI");
             //emulate the embed code [NEEDED]
             wc.Headers.Add("Origin", "https://embed.spotify.com");
             wc.Headers.Add("Referer", "https://embed.spotify.com/?uri=spotify:track:5Zp4SWOpbuOdnsxLqwgutt");
@@ -38,23 +46,25 @@ namespace JariZ
         {
             try
             {
-                string raw = new WebClient().DownloadString("http://open.spotify.com/album/" + uri.Split(new string[] { ":" }, StringSplitOptions.None)[2]);
-                raw = raw.Replace(" ", "");
+                var wc = new WebClient();
+                wc.Headers.Add("User-Agent: SpotifyAPI");
+                string raw = wc.DownloadString("http://open.spotify.com/album/" + uri.Split(new string[] { ":" }, StringSplitOptions.None)[2]);
+                raw = raw.Replace("\t", ""); ;
                 string[] lines = raw.Split(new string[] { "\n" }, StringSplitOptions.None);
                 foreach (string line in lines)
                 {
-                    if (line.StartsWith("<metaproperty=\"og:image\""))
+                    if (line.StartsWith("<meta property=\"og:image\""))
                     {
                         string[] l = line.Split(new string[] { "/" }, StringSplitOptions.None);
-                        return "http://d3rt1990lpmkn.cloudfront.net/640/" + l[4].Replace("\"", "");
+                        return "http://o.scdn.co/640/" + l[4].Replace("\"", "").Replace(">", "");
                     }
                 }
             }
             catch
             {
-                return "nope";
+                return "";
             }
-            return "nope";
+            return "";
         }
 
 
@@ -69,8 +79,6 @@ namespace JariZ
                 return Convert.ToInt32((DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0)).TotalSeconds);
             }
         }
-
-        WebClient wc = new WebClient();
 
         /// <summary>
         /// Gets the 'CFID', a unique identifier for the current session.
@@ -177,28 +185,22 @@ namespace JariZ
         }
 
         /// <summary>
-        /// Recieves a OAuth key from the Spotify site
+        /// Recieves an OAuth key from the Spotify site
         /// </summary>
         /// <returns></returns>
         public static string GetOAuth()
         {
-            WebClient client = new WebClient();
-            client.Headers.Add("User-Agent: SpotifyAPI");
-
-            string raw = client.DownloadString("https://embed.spotify.com/openplay/?uri=spotify:track:6uQ192yNyZ4W8yoaL0Sb9p");
-            
-            raw = raw.Replace(" ", "");
-            string[] lines = raw.Split(new string[] { "\n" }, StringSplitOptions.None);
-            foreach (string line in lines)
-            {
-                if (line.StartsWith("tokenData"))
-                {
-                    string[] l = line.Split(new string[] { "'" }, StringSplitOptions.None);
-                    return l[1];
-                }
+            var wc = new WebClient();
+            wc.Headers.Add("User-Agent: SpotifyAPI");
+            var raw = wc.DownloadString("https://embed.spotify.com/openplay/?uri=spotify:track:5Zp4SWOpbuOdnsxLqwgutt");
+            try {
+                char[] charsToTrim = { '\'' }; 
+                var line = Regex.Match(raw, @"tokenData ?= ?'[\w-]+',").Groups[0].Value;
+                var token = Regex.Match(line, @"'[\w-]+'").Groups[0].Value.Trim(charsToTrim);
+                return token;
+            } catch(Exception e) {
+                throw new Exception("Could not find OAuth token");    
             }
-
-            throw new Exception("Could not find OAuth token");
         }
 
 
@@ -243,14 +245,17 @@ namespace JariZ
                 derp = wc.DownloadString(a);
                 derp = "[ " + derp + " ]";
             }
-            catch (Exception z)
+            catch (System.Net.WebException e)
             {
                 //perhaps spotifywebhelper isn't started (happens sometimes)
                 if (Process.GetProcessesByName("SpotifyWebHelper").Length < 1)
                 {
                     try
                     {
-                        System.Diagnostics.Process.Start(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\Spotify\\Data\\SpotifyWebHelper.exe");
+                        string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                        System.Diagnostics.Process.Start(path + "\\Spotify\\SpotifyWebHelper.exe");
+                        //Thread.Sleep(5000);
+
                     }
                     catch (Exception dd)
                     {
@@ -260,7 +265,7 @@ namespace JariZ
                     return recv(request, oauth, cfid);
                 }
                 //spotifywebhelper is running but we still can't connect, wtf?!
-                else throw new Exception("Unable to connect to SpotifyWebHelper", z);
+                else throw new Exception("Unable to connect to SpotifyWebHelper", e);
             }
             return derp;
         }

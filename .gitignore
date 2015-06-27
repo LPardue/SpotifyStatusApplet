@@ -110,3 +110,8 @@ Binaries/Binaries.zip
 Binaries/SpotifyStatusApplet.exe
 Binaries/SpotifyStatusApplet.vshost.exe
 Binaries/SpotifyStatusApplet.vshost.exe.manifest
+*.deploy
+SpotifyStatusApplet/GlobalSuppressions.cs
+*.application
+Binaries/app.publish/Application Files/SpotifyStatusApplet_1_0_0_0/SpotifyStatusApplet.exe.manifest
+Binaries/app.publish/setup.exe

@@ -1,4 +1,27 @@
-﻿using System;
+﻿/*
+ * SpotifyStatusApplet 
+ *
+ * Copyright (c) 2015 Lucas Pardue
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the LICENSE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  This file is licensed 
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,11 +43,17 @@ namespace SpotifyStatusApplet
         private volatile bool m_monoArrived = false;
         private volatile bool m_qvgaArrived = false;
         private volatile bool m_keepRunning = true;
+        private volatile bool m_showTitles = false;
 
         private SpotifyAPI m_spotifyApiInstance;
         private Responses.CFID m_cfid;
 
         private LcdGraphics m_lcdGraphics;
+
+        SpotifyStatusApplet(bool showTitles)
+        {
+            m_showTitles = showTitles;
+        }
 
         // Application lifecycle follows the following sequence
         // 1. Acquire the Spotify Local resources
@@ -45,11 +74,21 @@ namespace SpotifyStatusApplet
         // pragmatically 
         // Additional tuning could be performed
         [MTAThread]
-        internal static void Main()
+        internal static void Main(string[] args)
         {
+            bool showTitles = true;
+
+            if (args != null && args.Length !=0)
+            {
+                if (args[0] == "notitles")
+                {
+                    showTitles = false;
+                }
+            }
+
             try
             {
-                SpotifyStatusApplet ssa = new SpotifyStatusApplet();
+                SpotifyStatusApplet ssa = new SpotifyStatusApplet(showTitles);
                 ssa.setupSpotify();
 
                 ssa.setupTrayIcon();
@@ -101,6 +140,7 @@ namespace SpotifyStatusApplet
                         false == monoDevice.IsDisposed)
                     {
                         ssa.m_lcdGraphics.setMediaPlayerDetails(ssa.getCurrentSpotifyDetails());
+                        ssa.m_lcdGraphics.setShowTitles(ssa.m_showTitles);
                         monoDevice.DoUpdateAndDraw();
                     }
 
@@ -227,7 +267,7 @@ namespace SpotifyStatusApplet
             // First button 
             if ((e.SoftButtons & LcdSoftButtons.Button0) == LcdSoftButtons.Button0)
             {
-
+                m_showTitles = !m_showTitles;
             }
 
             // Second button 
