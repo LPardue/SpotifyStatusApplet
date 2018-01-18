@@ -33,11 +33,16 @@ using GammaJul.LgLcd;
 using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
+
 
 namespace SpotifyStatusApplet
 {
     class SpotifyStatusApplet
     {
+        [DllImport("user32.dll")]
+        static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, uint dwExtraInfo);
+
         private readonly AutoResetEvent m_waitAutoResetEvent = new AutoResetEvent(false);
         // The folowing are declared volatile as they could be written to in event handlers, where the thread belongs to the caller
         private volatile bool m_monoArrived = false;
@@ -139,7 +144,15 @@ namespace SpotifyStatusApplet
                         null != monoDevice &&
                         false == monoDevice.IsDisposed)
                     {
-                        ssa.m_lcdGraphics.setMediaPlayerDetails(ssa.getCurrentSpotifyDetails());
+                        try
+                        {
+                            ssa.m_lcdGraphics.setMediaPlayerDetails(ssa.getCurrentSpotifyDetails());
+                        }
+                        catch (System.NullReferenceException)
+                        {
+                            Debug.WriteLine("GetCurentSpotifyDetails() is NULL. Ad is likely playing.");
+                        }
+
                         ssa.m_lcdGraphics.setShowTitles(ssa.m_showTitles);
                         monoDevice.DoUpdateAndDraw();
                     }
@@ -150,7 +163,7 @@ namespace SpotifyStatusApplet
             }
             catch (Exception e)
             {
-                Console.WriteLine("Caught exception, application exited " + e.ToString());
+                Trace.WriteLine("Caught exception, application exited " + e.ToString());
             }
         }
 
@@ -162,7 +175,7 @@ namespace SpotifyStatusApplet
 
             if (m_cfid.error != null)
             {
-                Console.WriteLine(string.Format("Spotify returned a error {0} (0x{1})", m_cfid.error.message, m_cfid.error.type));
+                Trace.WriteLine(string.Format("Spotify returned am error {0} (0x{1})", m_cfid.error.message, m_cfid.error.type));
                // Thread.Sleep(-1);
             }
             else
@@ -179,7 +192,7 @@ namespace SpotifyStatusApplet
             Responses.Status Current_Status = m_spotifyApiInstance.Status;
             if (m_cfid.error != null)
             {
-                Console.WriteLine(string.Format("Spotify returned a error {0} (0x{1})", m_cfid.error.message, m_cfid.error.type));
+                Trace.WriteLine(string.Format("Spotify returned a error {0} (0x{1})", m_cfid.error.message, m_cfid.error.type));
                 Thread.Sleep(-1);
             }
 
@@ -216,7 +229,7 @@ namespace SpotifyStatusApplet
             myThread.Start();
         }
 
-        // Event handler for new device arrical in the system.
+        // Event handler for new device arrival in the system.
         // Monochrome devices include (G510, G13, G15, Z10)
         private void appletDeviceArrival(object sender, LcdDeviceTypeEventArgs e)
         {            
@@ -268,23 +281,29 @@ namespace SpotifyStatusApplet
             if ((e.SoftButtons & LcdSoftButtons.Button0) == LcdSoftButtons.Button0)
             {
                 m_showTitles = !m_showTitles;
+                
             }
 
             // Second button 
             if ((e.SoftButtons & LcdSoftButtons.Button1) == LcdSoftButtons.Button1)
             {
-
+                keybd_event(Convert.ToByte(Keys.MediaPreviousTrack), 0, 0x00, 0); //KEYDOWN PrevTrack Key
+                keybd_event(Convert.ToByte(Keys.MediaPreviousTrack), 0, 0x02, 0); //KEYUP PrevTrack Key
             }
 
             // Third button 
             if ((e.SoftButtons & LcdSoftButtons.Button2) == LcdSoftButtons.Button2)
             {
+                keybd_event(Convert.ToByte(Keys.MediaPlayPause), 0, 0x00, 0); //KEYDOWN PlayPause Key
+                keybd_event(Convert.ToByte(Keys.MediaPlayPause), 0, 0x02, 0); //KEYUP PlayPause Key
 
             }
 
             // Fourth button 
             if ((e.SoftButtons & LcdSoftButtons.Button3) == LcdSoftButtons.Button3)
             {
+                keybd_event(Convert.ToByte(Keys.MediaNextTrack), 0, 0x00, 0); //KEYDOWN NextTrack Key
+                keybd_event(Convert.ToByte(Keys.MediaNextTrack), 0, 0x02, 0); //KEYUP NextTrack Key
                 //m_keepRunning = false;
             }
         }
