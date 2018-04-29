@@ -30,13 +30,15 @@ Environment and Building
 
 SpotifyStatusApplet is written in C# and has been developed using Visual Studio Express 2012 for Windows Desktop. A solution file is provided to gather all dependencies, it is anticipated this could be backported to support earlier versions of Visual Studio.
 
-You will need to sign SpotifyLocalAPI in order to use it.
+* Target .NET framework 4.5 and above.
+* Install both the SpotifyAPI-NET and Newtonsoft.json Nuget packages.
+* Enjoy!
 
 Dependencies
 --------------------------------------
 
 SpotifyStatusApplet builds upon the great efforts of other developers/projects! The following software components are incorporated into the source tree to aid distribution
 
-- [Spotify Local API](https://code.google.com/p/spotify-local-api/) - A very simple and small library that allows .NET developers to get track information, (un)pause spotify, play tracks, get cover art and more! 
+- [SpotifyAPI-NET](https://github.com/JohnnyCrazy/SpotifyAPI-NET) - A very simple and small library that allows .NET developers to get track information, (un)pause spotify, play tracks, get cover art and more! 
 - [GammaJul LgLcd](http://gjlglcd.codeplex.com/) - A .NET wrapper around the Logitech SDK for G15/G19 keyboard screens. Supports raw byte sending, GDI+ drawing and rendering WPF elements onto the screen.
-- [Json.net](http://json.codeplex.com/) - Json.NET is a popular high-performance JSON framework for .NET.
+- [Newtonsoft.json](https://github.com/JamesNK/Newtonsoft.Json) - Newtonsoft.json is a popular high-performance JSON framework for .NET.
