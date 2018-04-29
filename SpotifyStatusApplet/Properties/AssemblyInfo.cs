@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("SpotifyStatusApplet")]
-[assembly: AssemblyDescription("An LCD Applet for the Logitech Gaming keyboard family (G510, G13, G15 etc) that displays current track information and Spotify playback status.")]
+[assembly: AssemblyDescription("An LCD Applet for the Logitech Gaming keyboard family (G510, G13, G15 etc) that displays current track information and Spotify playback status. This software is distributed under the Apache-2.0 License. The following contributors helped make this software: JeffreyO")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Lucas Pardue")]
 [assembly: AssemblyProduct("SpotifyStatusApplet")]
-[assembly: AssemblyCopyright("Copyright © 2015. All Rights reserved.")]
+[assembly: AssemblyCopyright("Copyright © 2018. All Rights reserved.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
